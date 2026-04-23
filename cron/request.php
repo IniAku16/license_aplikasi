@@ -73,6 +73,8 @@ if ($data['request_count'] > 0) {
 }
 
 $exp = new DateTime($data['order_date'], new DateTimeZone('Asia/Jakarta'));
+$orderDate = clone $exp; 
+$orderDate->modify('-1 year');
 
 require_once __DIR__ . '/../vendor/phpmailer/src/PHPMailer.php';
 require_once __DIR__ . '/../vendor/phpmailer/src/SMTP.php';
@@ -90,11 +92,6 @@ $mail->CharSet     = 'UTF-8';
 $mail->setFrom("itlicenseaplikasi@hexindo-tbk.co.id", "IT License");
 $mail->addAddress("ara.rhzz16@gmail.com");
 $mail->addAddress("denipratama@hexindo-tbk.co.id");
-
-if (!empty($data['foto'])) {
-    $filePath = __DIR__ . '/../public/uploads/' . $data['foto'];
-    if (file_exists($filePath)) { $mail->addAttachment($filePath); }
-}
 
 $mail->isHTML(true);
 $mail->Subject = "Request Penawaran: " . $data['username'] . " (" . $data['agreement_number'] . ")";
@@ -115,7 +112,7 @@ $mail->Body = "
                     <tr>
                         <td style='padding: 40px;'>
                             <p style='font-size: 15px; color: #2d3436;'>Dear <b>Mas Fauzi / Mbak Nurhesty</b>,</p>
-                            <p style='font-size: 14px; color: #636e72; line-height: 1.6;'>Mohon bantuan untuk proses penawaran lisensi aplikasi dengan detail sebagai berikut:</p>
+                            <p style='font-size: 14px; color: #636e72; line-height: 1.6;'>Mohon bantuan untuk dikirimkan penawaran lisensi aplikasi dengan detail sebagai berikut:</p>
                             
                             <table width='100%' style='margin-top: 20px; border-collapse: collapse; border-radius: 12px; overflow: hidden; border: 1px solid #f1f2f6;'>
                                 <tr>
@@ -123,7 +120,7 @@ $mail->Body = "
                                     <td style='padding: 12px; color: #2d3436; font-weight: bold; font-size: 14px; border-bottom: 1px solid #f1f2f6;'>{$data['agreement_number']}</td>
                                 </tr>
                                 <tr>
-                                    <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; text-transform: uppercase;'>User Name</td>
+                                    <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; text-transform: uppercase;'>User</td>
                                     <td style='padding: 12px; color: #2d3436; font-size: 14px; border-bottom: 1px solid #f1f2f6;'>{$data['username']}</td>
                                 </tr>
                                 <tr>
@@ -131,7 +128,11 @@ $mail->Body = "
                                     <td style='padding: 12px; color: #2d3436; font-size: 14px; border-bottom: 1px solid #f1f2f6;'>{$data['departemen']}</td>
                                 </tr>
                                 <tr>
-                                    <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; text-transform: uppercase;'>Last Order Date</td>
+                                    <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; text-transform: uppercase;'>Order Date</td>
+                                    <td style='padding: 12px; color: #2d3436; font-size: 14px; border-bottom: 1px solid #f1f2f6;'>{$orderDate->format('d M Y')}</td>
+                                </tr>
+                                <tr>
+                                    <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; text-transform: uppercase;'>Expired Date</td>
                                     <td style='padding: 12px; color: #e74c3c; font-weight: bold; font-size: 14px;'>{$exp->format('d M Y')}</td>
                                 </tr>
                             </table>
@@ -155,6 +156,11 @@ $mail->Body = "
     </table>
 </body>
 </html>";
+
+if (!empty($data['foto'])) {
+    $filePath = __DIR__ . '/../public/uploads/' . $data['foto'];
+    if (file_exists($filePath)) { $mail->addAttachment($filePath); }
+}
 
 if (!$mail->send()) {
     echo "Error: " . $mail->ErrorInfo;

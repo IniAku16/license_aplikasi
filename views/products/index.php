@@ -305,11 +305,11 @@ $activePage = 'products';
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Agreement</th>
+                                    <th>Agreement Number</th>
                                     <th>User / Dept</th>
-                                    <th>Order Date</th>
+                                    <th>Expired Date</th>
                                     <th>Sisa Hari</th>
-                                    <th>Quotation</th>
+                                    <th>Last Quotation</th>
                                     <th>Foto</th>
                                     <th>Status</th>
                                     <th class="text-center">Action</th>
@@ -428,7 +428,7 @@ $activePage = 'products';
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Order Date</label>
+                                <label class="form-label">Expired Date</label>
                                 <input type="date" class="form-control" name="order_date" required>
                             </div>
 
@@ -485,7 +485,7 @@ $activePage = 'products';
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Order Date</label>
+                                <label class="form-label">Expired Date</label>
                                 <input type="date" class="form-control" id="edit_order_date" name="order_date" required>
                             </div>
 

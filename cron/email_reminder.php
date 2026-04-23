@@ -29,6 +29,9 @@ while ($data = $query->fetch_assoc()) {
     $departemen = htmlspecialchars($data['departemen']);
     $exp = new DateTime($data['order_date'], new DateTimeZone('Asia/Jakarta'));
 
+    $orderDate = clone $exp;
+    $orderDate->modify('-1 year'); 
+
     $interval = $today->diff($exp);
     $selisih_hari = (int)$interval->format("%r%a");
 
@@ -68,7 +71,8 @@ while ($data = $query->fetch_assoc()) {
             <div style='color: #111827; font-weight: 600; font-size: 14px;'>$nama</div>
             <div style='font-size: 11px; color: #5d55cb; background: #eeebff; display: inline-block; padding: 2px 10px; border-radius: 6px; font-weight: 600; margin-top: 4px;'>$departemen</div>
         </td>
-        <td style='padding: 15px 10px; text-align: center; color: #1f2937; font-size: 13px; font-weight: 500;'>" . $exp->format("d M Y") . "</td>
+        <td style='padding: 15px 10px; text-align: center;'>" . $orderDate->format("d M Y") . "</td>
+        <td style='padding: 15px 10px; text-align: center;'>" . $exp->format("d M Y") . "</td>
         <td style='padding: 15px 10px; text-align: center; $hari_style font-size: 13px;'>$hari_label</td>
         <td style='padding: 15px 10px; text-align: center;'>
             <span style='background: $badge_bg; color: $badge_text; padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
@@ -129,6 +133,7 @@ if ($kirim_email) {
                                                 <th style='padding: 15px 10px; text-align: left; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Agreement</th>
                                                 <th style='padding: 15px 10px; text-align: left; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>User / Dept</th>
                                                 <th style='padding: 15px 10px; text-align: center; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Order Date</th>
+                                                <th style='padding: 15px 10px; text-align: center; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Expired Date</th>
                                                 <th style='padding: 15px 10px; text-align: center; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Sisa Hari</th>
                                                 <th style='padding: 15px 10px; text-align: center; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Status</th>
                                                 <th style='padding: 15px 10px; text-align: center; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Action</th>
