@@ -195,7 +195,7 @@ if ($kirim_email) {
     $mail->From = "ithexindo@hexindo-tbk.co.id";
     $mail->FromName = "Application License Reminder";
     $mail->addAddress("ara.rhzz16@gmail.com");
-    $mail->addAddress("denipratama@hexindo-tbk.co.id");
+    /*$mail->addAddress("denipratama@hexindo-tbk.co.id");*/
 
     $mail->isHTML(true);
     $mail->Subject = "License Expiring Soon (≤ 30 Hari)";

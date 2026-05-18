@@ -123,7 +123,7 @@
             right: 0;
             text-align: center;
             font-size: 9px;
-            color: #bdc3c7;
+            color: #3a3b3b;
         }
 
         .page-number:after { content: counter(page); }
@@ -193,7 +193,7 @@
     <?php endif; ?>
 
     <div class="footer">
-        Halaman <span class="page-number"></span> | Dokumen Resmi Sistem Lisensi Aplikasi | Dicetak pada <?= date('d/m/Y H:i') ?>
+        Halaman <span class="page-number"></span> | Dokumen Resmi Sistem Lisensi Aplikasi | Dicetak pada <?= date('d/m/Y') ?>
     </div>
 
 </body>

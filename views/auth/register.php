@@ -183,7 +183,7 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="../../controllers/RegisterController.php" class="text-start">
+        <form method="POST" action="index.php?action=register-process" class="text-start">
             <div class="mb-3">
                 <label class="form-label">Username</label>
                 <input type="text" name="username" class="form-control" placeholder="Create a username" required>
@@ -210,7 +210,7 @@
         <div class="footer-section">
             <p class="footer-text">
                 Already have an account?
-                <a href="login.php" class="link-pastel">Login here</a>
+                <a href="index.php?action=show-login" class="link-pastel">Login here</a>
             </p>
         </div>
     </div>

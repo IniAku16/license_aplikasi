@@ -23,7 +23,7 @@
         .title {
             font-size: 22px;
             font-weight: bold;
-            color: #2d3436;
+            color: #232424;
             margin: 0;
         }
 
@@ -137,7 +137,7 @@
             margin-top: 40px;
             text-align: center;
             font-size: 10px;
-            color: #bdc3c7;
+            color: #3b3b3b;
         }
     </style>
 </head>
@@ -152,7 +152,7 @@
                 </td>
                 <td align="right">
                     <div style="font-weight: bold; color: #5d55cb;">#<?= htmlspecialchars($product['agreement_number']) ?></div>
-                    <div style="color: #bdc3c7; font-size: 10px;">Dicetak: <?= date('d/m/Y H:i') ?></div>
+                    <div style="color: #bdc3c7; font-size: 10px;">Dicetak: <?= date('d/m/Y') ?></div>
                 </td>
             </tr>
         </table>

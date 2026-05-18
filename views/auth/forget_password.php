@@ -168,7 +168,7 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="../../controllers/ForgotPasswordController.php" class="text-start">
+        <form method="POST" action="index.php?action=forget-process" class="text-start">
 
             <div class="mb-3">
                 <label class="form-label">Username / Email</label>
@@ -198,7 +198,7 @@
         </form>
 
         <p class="footer-text">
-            Remembered? <a href="login.php" class="link-pastel">Back to Login</a>
+            Remembered? <a href="index.php?action=show-login" class="link-pastel">Back to Login</a>
         </p>
     </div>
 

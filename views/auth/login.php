@@ -202,7 +202,7 @@
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="../../controllers/AuthController.php" class="text-start">
+        <form method="POST" action="index.php?action=login-process" class="text-start">
             
             <div class="mb-3">
                 <label class="form-label">Username / Email</label>
@@ -226,10 +226,10 @@
         <div class="footer-section">
             <p class="footer-text">
                 Don't have an account? 
-                <a href="register.php" class="link-pastel">Create Account</a>
+                <a href="index.php?action=show-register" class="link-pastel">Create Account</a>
             </p>
             <p class="footer-text mt-2">
-                <a href="forget_password.php" class="link-pastel">Forgot Password?</a>
+                <a href="index.php?action=show-forget"  class="link-pastel">Forgot Password?</a>
             </p>
         </div>
     </div>

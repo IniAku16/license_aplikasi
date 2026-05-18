@@ -21,7 +21,7 @@ class UserModel
     public function login()
     {
         $query = " SELECT id_user, username, email, password FROM "
-            . $this->table . " WHERE username=? OR email=?";
+            . $this->table . " WHERE BINARY username=? OR BINARY email=?";
 
         $stmt = $this->db->prepare($query);
 

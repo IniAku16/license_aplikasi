@@ -1,22 +1,31 @@
 <?php
-session_start();
+class RegisterController {
+    private $koneksi;
 
-require_once __DIR__ . "/../config/koneksi.php";
-require_once __DIR__ . "/../models/User.php";
+    public function __construct($db) {
+        $this->koneksi = $db;
+    }
 
-$user = new UserModel($koneksi);
+    public function showRegisterForm() {
+        include __DIR__ . "/../views/auth/register.php";
+    }
 
-if($_SERVER['REQUEST_METHOD'] == "POST"){
-    $user->username = $_POST['username'];
-    $user->email = $_POST['email'];
+    public function register() {
+        require_once __DIR__ . "/../models/User.php";
+        $user = new UserModel($this->koneksi);
 
-    $user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        if ($_SERVER['REQUEST_METHOD'] == "POST") {
+            $user->username = $_POST['username'];
+            $user->email = $_POST['email'];
+            $user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    if($user->register()){
-        header("Location: ../views/auth/login.php?register=success");
-        exit();
-    } else {
-        echo "Registrasi Anda Gagal!";
+            if ($user->register()) {
+                header("Location: index.php?action=show-login&success=Registrasi Berhasil");
+                exit();
+            } else {
+                header("Location: index.php?action=show-register&error=Registrasi Gagal");
+                exit();
+            }
+        }
     }
 }
-?>

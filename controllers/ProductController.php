@@ -16,6 +16,9 @@ class ProductController
 
     public function __construct($koneksi)
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $this->model = new ProductModel($koneksi);
         $this->paymentModel = new PaymentModel($koneksi);
         $this->uploadPath = realpath(__DIR__ . "/../public/uploads") . "/";
@@ -29,10 +32,11 @@ class ProductController
         $activeCount = 0;
         $expiringCount = 0;
         $expiredCount = 0;
-        $expiringProducts = [];
 
         date_default_timezone_set("Asia/Jakarta");
         $today = date("Y-m-d");
+
+        $milestoneProducts = [];
 
         while ($row = mysqli_fetch_assoc($products)) {
             $expired = $row['order_date'];
@@ -54,15 +58,17 @@ class ProductController
                     $status = "expiring";
                     $color = "warning";
                     $expiringCount++;
-                    if ($request_count == 0) {
-                        $expiringProducts[] = $row;
+                     if ($request_count == 0) {
+                    if ($diff == 30 || $diff == 15 || $diff == 3) {
+                        $milestoneProducts[] = $row['id'] . '|' . $diff;
                     }
-                } else {
-                    $status = "active";
-                    $color = "success";
-                    $activeCount++;
                 }
+            } else {
+                $status = "active";
+                $color = "success";
+                $activeCount++;
             }
+        }
 
             $row['status'] = $status;
             $row['color'] = $color;
@@ -73,21 +79,30 @@ class ProductController
         $products = $data;
         $totalProducts = count($products);
 
-        if (!empty($expiringProducts) || $expiredCount > 0) {
-            $tanggalHariIni = date("Y-m-d");
-            $logFile = __DIR__ . '/../cron/last_email_sent.txt';
-            $terakhirKirim = file_exists($logFile) ? trim(file_get_contents($logFile)) : '';
-
-            if ($terakhirKirim !== $tanggalHariIni) {
-                file_put_contents($logFile, $tanggalHariIni);
-                ob_start();
-                include __DIR__ . "/../cron/email_reminder.php";
-                ob_end_clean();
-                clearstatcache();
-            }
+        if (!empty($milestoneProducts)) {
+            $this->attemptEmailTrigger($milestoneProducts);
         }
 
         include __DIR__ . "/../views/products/index.php";
+    }
+
+    private function attemptEmailTrigger($milestoneProducts)
+    {
+        sort($milestoneProducts);
+        $currentFingerprint = md5(implode(',', $milestoneProducts));
+
+        $lastFingerprint = $_SESSION['last_email_fingerprint'] ?? '';
+
+        if ($currentFingerprint !== $lastFingerprint) {
+
+            $_SESSION['last_email_fingerprint'] = $currentFingerprint;
+
+            $dataReminder = $milestoneProducts; 
+
+            ob_start();
+            include __DIR__ . "/../cron/email_reminder.php";
+            ob_end_clean();
+        }
     }
 
     public function create()
@@ -110,28 +125,22 @@ class ProductController
             if (isset($_FILES['foto']) && $_FILES['foto']['error'] === 0) {
                 $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
                 $foto = "IMG_" . time() . "_" . uniqid() . "." . $ext;
-                
+
                 if (!move_uploaded_file($_FILES['foto']['tmp_name'], $targetDir . $foto)) {
-                    $foto = null; 
+                    $foto = null;
                 }
             }
 
             $success = $this->model->create($name, $agreement, $expired, $harga, $departemen, $foto);
 
             if ($success) {
-                $today = new DateTime();
-                $expDate = new DateTime($expired);
-                $diff = $today->diff($expDate)->format("%r%a");
-
-                if ($diff <= 30) {
-                    ob_start();
-                    include __DIR__ . "/../cron/email_reminder.php";
-                    ob_end_clean();
-                }
-                echo json_encode(["status" => "success", "message" => "Selamat data berhasil disimpan"]);
-            } else {
-                echo json_encode(["status" => "error", "message" => "Data gagal disimpan ke database"]);
+                unset($_SESSION['last_email_fingerprint']);
             }
+
+            echo json_encode([
+                "status"  => $success ? "success" : "error",
+                "message" => $success ? "Data berhasil disimpan" : "Gagal menyimpan data"
+            ]);
             exit;
         }
     }
@@ -174,7 +183,7 @@ class ProductController
                 $expired    = $_POST['order_date'] ?? '';
                 $harga      = !empty($_POST['harga_order']) ? $_POST['harga_order'] : 0;
                 $departemen = $_POST['departemen'] ?? '';
-                $foto       = $product['foto']; 
+                $foto       = $product['foto'];
 
                 if (isset($_FILES['foto']) && $_FILES['foto']['error'] === 0) {
                     $targetDir = __DIR__ . "/../public/uploads/";
@@ -190,13 +199,23 @@ class ProductController
                 }
 
                 $success = $this->model->update($id, $name, $agreement, $expired, $harga, $departemen, $foto);
+                if ($success) {
+                    unset($_SESSION['last_email_fingerprint']);
+                }
+
+                header('Content-Type: application/json');
                 echo json_encode([
                     "status"  => $success ? "success" : "error",
-                    "message" => $success ? "Data berhasil diupdate" : "Update gagal"
+                    "message" => $success ? "Update berhasil" : "Gagal"
                 ]);
                 exit;
             }
         }
+    }
+
+    public function checkAndTriggerReminder($orderDate, $force = false)
+    {
+        unset($_SESSION['last_email_fingerprint']);
     }
 
     public function history()
@@ -235,7 +254,7 @@ class ProductController
         if ($product_id) {
             $product = $this->model->getById($product_id);
             if (!$product) die("Product tidak ditemukan");
-            
+
             $result = $this->paymentModel->getPaymentDetailsByProduct($product_id);
             $details = [];
             while ($row = mysqli_fetch_assoc($result)) {
@@ -273,7 +292,7 @@ class ProductController
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $headers = ['No', 'Agreement Number', 'User', 'Departemen', 'Order Date', 'Last Quotation'];
+        $headers = ['No', 'Agreement Number', 'User', 'Departemen', 'Order Date', 'Expired Date', 'Sisa Hari', 'Status'];
         $column = 'A';
         foreach ($headers as $h) {
             $sheet->setCellValue($column . '1', $h);
@@ -282,32 +301,64 @@ class ProductController
 
         $headerStyle = [
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '4AA3FF']],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER],
+            'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => '4AA3FF']],
+            'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
         ];
-        $sheet->getStyle('A1:F1')->applyFromArray($headerStyle);
+        $sheet->getStyle('A1:H1')->applyFromArray($headerStyle);
 
         $rowNum = 2;
         $no = 1;
+
+        $today = new \DateTime('now', new \DateTimeZone('Asia/Jakarta'));
+        $today->setTime(0, 0, 0);
+
         while ($row = mysqli_fetch_assoc($result)) {
+            $exp = new \DateTime($row['order_date'], new \DateTimeZone('Asia/Jakarta'));
+            $orderDate = clone $exp;
+            $orderDate->modify('-1 year');
+
+            $interval = $today->diff($exp);
+            $selisih_hari = (int)$interval->format("%r%a");
+
+            if ($selisih_hari < 0) {
+                $status_label = "Expired";
+                $hari_label = abs($selisih_hari) . " Hari Lalu";
+            } elseif ($selisih_hari <= 7) {
+                $status_label = "Expiring";
+                $hari_label = $selisih_hari . " Hari Lagi";
+            } else {
+                $status_label = "Active";
+                $hari_label = $selisih_hari . " Hari";
+            }
+
             $sheet->setCellValue('A' . $rowNum, $no++);
             $sheet->setCellValueExplicit('B' . $rowNum, $row['agreement_number'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
             $sheet->setCellValue('C' . $rowNum, $row['username']);
             $sheet->setCellValue('D' . $rowNum, $row['departemen']);
-            $sheet->setCellValue('E' . $rowNum, $row['order_date']);
-            $sheet->setCellValue('F' . $rowNum, $row['harga_order']);
-            $sheet->getStyle('A' . $rowNum . ':F' . $rowNum)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
+            $sheet->setCellValue('E' . $rowNum, $orderDate->format("d M Y"));
+
+            $sheet->setCellValue('F' . $rowNum, $exp->format("d M Y"));
+
+            $sheet->setCellValue('G' . $rowNum, $hari_label);
+
+            $sheet->setCellValue('H' . $rowNum, $status_label);
+
+            $sheet->getStyle('A' . $rowNum . ':H' . $rowNum)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
             $rowNum++;
         }
 
-        foreach (range('A', 'F') as $col) $sheet->getColumnDimension($col)->setAutoSize(true);
+        foreach (range('A', 'H') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="Export_License_' . date('Ymd_His') . '.xlsx"');
         header('Cache-Control: max-age=0');
 
-        $writer = new Xlsx($spreadsheet);
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save('php://output');
         exit;
     }
