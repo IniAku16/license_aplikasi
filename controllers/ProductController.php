@@ -19,6 +19,7 @@ class ProductController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+        require_once __DIR__ . '/../vendor/autoload.php';
         $this->model = new ProductModel($koneksi);
         $this->paymentModel = new PaymentModel($koneksi);
         $this->uploadPath = realpath(__DIR__ . "/../public/uploads") . "/";
@@ -54,21 +55,19 @@ class ProductController
                     $status = "expired";
                     $color = "danger";
                     $expiredCount++;
-                } elseif ($diff <= 30 && $diff >= 0) {
+                } elseif ($diff <= 30) {
                     $status = "expiring";
                     $color = "warning";
                     $expiringCount++;
-                     if ($request_count == 0) {
-                    if ($diff == 30 || $diff == 15 || $diff == 3) {
+                    if ($request_count == 0) {
                         $milestoneProducts[] = $row['id'] . '|' . $diff;
                     }
+                } else {
+                    $status = "active";
+                    $color = "success";
+                    $activeCount++;
                 }
-            } else {
-                $status = "active";
-                $color = "success";
-                $activeCount++;
             }
-        }
 
             $row['status'] = $status;
             $row['color'] = $color;
@@ -79,7 +78,10 @@ class ProductController
         $products = $data;
         $totalProducts = count($products);
 
-        if (!empty($milestoneProducts)) {
+        $skipEmail = $_SESSION['skip_email_after_delete'] ?? false;
+        unset($_SESSION['skip_email_after_delete']);
+
+        if (!$skipEmail && !empty($milestoneProducts)) {
             $this->attemptEmailTrigger($milestoneProducts);
         }
 
@@ -115,7 +117,7 @@ class ProductController
             $expired     = $_POST['order_date'] ?? '';
             $harga       = !empty($_POST['harga_order']) ? $_POST['harga_order'] : 0;
             $departemen  = $_POST['departemen'] ?? '';
-            $foto        = null;
+            $foto        = '';
 
             $targetDir = __DIR__ . "/../public/uploads/";
             if (!is_dir($targetDir)) {
@@ -135,6 +137,7 @@ class ProductController
 
             if ($success) {
                 unset($_SESSION['last_email_fingerprint']);
+                $this->sendReminderIfNeeded();
             }
 
             echo json_encode([
@@ -201,6 +204,7 @@ class ProductController
                 $success = $this->model->update($id, $name, $agreement, $expired, $harga, $departemen, $foto);
                 if ($success) {
                     unset($_SESSION['last_email_fingerprint']);
+                    $this->sendReminderIfNeeded();
                 }
 
                 header('Content-Type: application/json');
@@ -210,6 +214,33 @@ class ProductController
                 ]);
                 exit;
             }
+        }
+    }
+
+    private function sendReminderIfNeeded()
+    {
+        $products = $this->model->getAllProducts();
+        $milestoneProducts = [];
+
+        date_default_timezone_set("Asia/Jakarta");
+        $today = date("Y-m-d");
+
+        while ($row = mysqli_fetch_assoc($products)) {
+            $request_count = $row['request_count'] ?? 0;
+            $expired = $row['order_date'] ?? '';
+
+            if (empty($expired) || $request_count != 0) {
+                continue;
+            }
+
+            $diff = floor((strtotime($expired) - strtotime($today)) / 86400);
+            if ($diff <= 30) {
+                $milestoneProducts[] = $row['id'] . '|' . $diff;
+            }
+        }
+
+        if (!empty($milestoneProducts)) {
+            $this->attemptEmailTrigger($milestoneProducts);
         }
     }
 
@@ -373,6 +404,7 @@ class ProductController
             }
         }
         $this->model->delete($id);
+        $_SESSION['skip_email_after_delete'] = true;
         header("Location: index.php");
         exit;
     }

@@ -14,7 +14,7 @@ if ($mysqli->connect_error) {
 $today = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
 $today->setTime(0, 0, 0);
 
-$query = $mysqli->query("SELECT id, username, order_date, departemen, agreement_number FROM products WHERE request_count = 0");
+$query = $mysqli->query("SELECT id, username, order_date, departemen, agreement_number FROM products WHERE request_count = 0 AND DATEDIFF(order_date, CURDATE()) <= 30");
 
 $rows = "";
 $kirim_email = false;

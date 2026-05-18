@@ -7,7 +7,7 @@ class ForgotPasswordController {
     }
 
     public function showForgetForm() {
-        include __DIR__ . "/../views/auth/forget.php";
+        include __DIR__ . "/../views/auth/forget_password.php";
     }
 
     public function process() {

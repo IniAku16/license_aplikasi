@@ -62,6 +62,15 @@ switch ($action) {
     case 'history':
         $productController->history();
         break;
+    case 'history-detail':
+        $productController->historyDetail();
+        break;
+    case 'history-pdf':
+        $productController->historyPdf();
+        break;
+    case 'exportExcel':
+        $productController->exportExcel();
+        break;
     default:
         $productController->index();
         break;
