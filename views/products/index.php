@@ -305,6 +305,7 @@ $activePage = 'products';
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Application Name</th>
                                     <th>Agreement Number</th>
                                     <th>User / Dept</th>
                                     <th>Expired Date</th>
@@ -326,11 +327,15 @@ $activePage = 'products';
                                         <tr>
                                             <td class="text-muted small row-number"><?= $no++ ?></td>
                                             <td>
+                                                <div class="fw-bold text-dark"><?= htmlspecialchars($product['application_name']) ?></div>
+                                            </td>
+                                            <td>
                                                 <div class="fw-bold text-dark"><?= htmlspecialchars($product['agreement_number']) ?></div>
                                             </td>
                                             <td>
                                                 <div class="fw-semibold"><?= htmlspecialchars($product['username']) ?></div>
                                                 <small class="badge bg-secondary bg-opacity-10 text-secondary"><?= htmlspecialchars($product['departemen']) ?></small>
+                                                <small class="badge bg-secondary bg-opacity-10 text-secondary"><?= htmlspecialchars($product['email_name']) ?></small>
                                             </td>
                                             <td class="small text-muted"><?= $product['order_date'] ?></td>
                                             <td>
@@ -360,9 +365,11 @@ $activePage = 'products';
                                                 <div class="btn-group shadow-sm">
                                                     <button class="btn btn-white btn-sm btn-update"
                                                         data-id="<?= $product['id'] ?>"
+                                                        data-application="<?= htmlspecialchars($product['application_name']) ?>"
                                                         data-agreement="<?= htmlspecialchars($product['agreement_number']) ?>"
                                                         data-name="<?= htmlspecialchars($product['username']) ?>"
                                                         data-departemen="<?= htmlspecialchars($product['departemen']) ?>"
+                                                        data-email="<?= htmlspecialchars($product['email_name']) ?>"
                                                         data-expired="<?= $product['order_date'] ?>"
                                                         data-harga="<?= $product['harga_order'] ?>"
                                                         data-foto="<?= $product['foto'] ?>">
@@ -413,6 +420,11 @@ $activePage = 'products';
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
+                                <label class="form-label">Application Name</label>
+                                <input type="text" class="form-control" name="application_name" placeholder="Enter application name" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Agreement Number</label>
                                 <input type="text" class="form-control" name="agreement_number" placeholder="Enter agreement number" required>
                             </div>
@@ -425,6 +437,11 @@ $activePage = 'products';
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Departemen</label>
                                 <input type="text" class="form-control" name="departemen" placeholder="Enter department" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="text" class="form-control" name="email_name" placeholder="Enter email">
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -470,6 +487,11 @@ $activePage = 'products';
                         <div class="row">
 
                             <div class="col-md-6 mb-3">
+                                <label class="form-label">Application Name</label>
+                                <input type="text" class="form-control" id="edit_application_name" name="application_name" placeholder="Enter application name" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">Agreement Number</label>
                                 <input type="text" class="form-control" id="edit_agreement_number" name="agreement_number" placeholder="Enter agreement number" required>
                             </div>
@@ -482,6 +504,11 @@ $activePage = 'products';
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Departemen</label>
                                 <input type="text" class="form-control" id="edit_departemen" name="departemen" placeholder="Enter department" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="text" class="form-control" id="edit_email" name="email_name" placeholder="Enter email">
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -523,18 +550,20 @@ $activePage = 'products';
                 <form id="paymentForm">
 
                     <div class="modal-header">
-                        <h5 class="modal-title">Add Payment</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <h5 class="modal-title">Konfirmasi Payment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <input type="hidden" id="payment_product_id" name="product_id">
+                   <div class="modal-body">
+                        <input type="hidden" id="payment_product_id" />
 
-                        <div class="row">
+                        <div class="mb-3">
+                            <label for="payment_date" class="form-label">Tanggal</label>
+                            <input type="date" class="form-control" id="payment_date" min="<?php echo date('Y-m-d'); ?>" required>
+                        </div>
 
-                            <div class="col-12 mb-3">
-                                <label class="form-label">Payment Date</label>
-                                <input type="date" class="form-control" id="payment_date" name="payment_date" min="<?php echo date('Y-m-d'); ?>" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="payment_amount" class="form-label">Total Pembayaran</label>
+                            <input type="number" class="form-control" id="payment_amount" name="amount" placeholder="Contoh: 15000000" required />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -545,6 +574,7 @@ $activePage = 'products';
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content card-custom">
@@ -592,9 +622,11 @@ $activePage = 'products';
         document.querySelectorAll('.btn-update').forEach(button => {
             button.addEventListener('click', function() {
                 document.getElementById('edit_product_id').value = this.dataset.id;
+                document.getElementById('edit_application_name').value = this.dataset.application;
                 document.getElementById('edit_agreement_number').value = this.dataset.agreement;
                 document.getElementById('edit_username').value = this.dataset.name;
                 document.getElementById('edit_departemen').value = this.dataset.departemen;
+                document.getElementById('edit_email').value = this.dataset.email;
                 document.getElementById('edit_order_date').value = this.dataset.expired;
                 document.getElementById('edit_harga_order').value = this.dataset.harga;
                 document.getElementById('edit_foto').value = "";
@@ -662,7 +694,7 @@ $activePage = 'products';
 
             tableRows.forEach(row => {
                 const textContent = row.innerText.toLowerCase();
-                const orderDateStr = row.cells[3].innerText;
+                const orderDateStr = row.cells[4].innerText;
                 const expiredDate = new Date(orderDateStr);
 
                 let matchesSearch = textContent.includes(searchText);
@@ -696,10 +728,12 @@ $activePage = 'products';
 
             const id = document.getElementById('payment_product_id').value;
             const date = document.getElementById('payment_date').value;
+             const amount = document.getElementById('payment_amount').value;
 
             const formData = new FormData();
             formData.append('payment_status', 'done');
             formData.append('payment_date', date);
+            formData.append('amount', amount);
 
             fetch('/license_aplikasi/public/index.php?action=update&id=' + id, {
                     method: 'POST',
@@ -750,7 +784,7 @@ $activePage = 'products';
                 if (row.cells.length < 2) return false;
 
                 const textContent = row.innerText.toLowerCase();
-                const orderDateStr = row.cells[3].innerText;
+                const orderDateStr = row.cells[4].innerText;
                 const expiredDate = new Date(orderDateStr);
 
                 let matchesSearch = textContent.includes(searchText);

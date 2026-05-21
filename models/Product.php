@@ -27,27 +27,26 @@ class ProductModel
         return $stmt->get_result()->fetch_assoc();
     }
 
-    public function create($name, $agreement, $expired, $harga, $departemen, $foto)
+    public function create($name, $application, $agreement, $expired, $harga, $departemen, $email, $foto)
     {
-        $sql = "INSERT INTO products (username, agreement_number, order_date, harga_order, departemen, foto) VALUES (?,?,?,?,?,?)";
+        $sql = "INSERT INTO products (username, application_name, agreement_number, order_date, harga_order, departemen, email_name, foto) VALUES (?,?,?,?,?,?,?,?)";
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("ssssss", $name, $agreement, $expired, $harga, $departemen, $foto);
+        $stmt->bind_param("ssssssss", $name, $application, $agreement, $expired, $harga, $departemen, $email, $foto);
         return $stmt->execute();
     }
 
-    public function update($id, $name, $agreement, $expired, $harga, $departemen, $foto)
+    public function update($id, $name, $application, $agreement, $expired, $harga, $departemen, $email, $foto)
     {
         $sql = "UPDATE products 
-                SET username=?, agreement_number=?, order_date=?, harga_order=?, departemen=?, foto=? 
+                SET username=?, application_name=?, agreement_number=?, order_date=?, harga_order=?, departemen=?, email_name=?, foto=? 
                 WHERE id=?";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->bind_param("ssssssi", $name, $agreement, $expired, $harga, $departemen, $foto, $id);
-
+        $stmt->bind_param("ssssssssi", $name, $application, $agreement, $expired, $harga, $departemen, $email, $foto, $id);
         return $stmt->execute();
     }
 
-    public function updatePayment($id, $payment_date)
+    public function updatePayment($id, $payment_date, $amount)
     {
 
         $product = $this->getById($id);
@@ -57,11 +56,12 @@ class ProductModel
         }
 
         $expired_lama = $product['order_date'];
-        $amount = $product['harga_order'];
-
         $new_expired = date("Y-m-d", strtotime($expired_lama . " +1 year"));
-
         $paymentModel = new PaymentModel($this->db);
+
+        if ($paymentModel->isPaymentExists($id, $payment_date)) {
+            return "duplicate_date";
+        }
 
         $this->db->begin_transaction();
 
@@ -73,10 +73,10 @@ class ProductModel
             }
 
             $sql = "UPDATE products 
-                    SET payment_status='done', payment_date=?, order_date=?, request_count=0 
+                    SET payment_status='done', payment_date=?, order_date=?, harga_order=?, request_count=0 
                     WHERE id=?";
             $stmt = $this->db->prepare($sql);
-            $stmt->bind_param("ssi", $payment_date, $new_expired, $id);
+            $stmt->bind_param("ssdi", $payment_date, $new_expired, $amount, $id);
 
             $updateProduct = $stmt->execute();
 

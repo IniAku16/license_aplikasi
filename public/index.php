@@ -47,9 +47,6 @@ switch ($action) {
     case 'forget-process':
         $forgotPasswordController->process();
         break;
-    case 'logout':
-        $authController->logout();
-        break;
     case 'create':
         $productController->create();
         break;

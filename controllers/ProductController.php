@@ -113,10 +113,12 @@ class ProductController
             header('Content-Type: application/json');
 
             $name        = trim($_POST['username'] ?? '');
+            $application   = trim($_POST['application_name'] ?? '');
             $agreement   = trim($_POST['agreement_number'] ?? '');
             $expired     = $_POST['order_date'] ?? '';
             $harga       = !empty($_POST['harga_order']) ? $_POST['harga_order'] : 0;
             $departemen  = $_POST['departemen'] ?? '';
+            $email   = trim($_POST['email_name'] ?? '');
             $foto        = '';
 
             $targetDir = __DIR__ . "/../public/uploads/";
@@ -133,7 +135,7 @@ class ProductController
                 }
             }
 
-            $success = $this->model->create($name, $agreement, $expired, $harga, $departemen, $foto);
+            $success = $this->model->create($name, $application, $agreement, $expired, $harga, $departemen, $email, $foto);
 
             if ($success) {
                 unset($_SESSION['last_email_fingerprint']);
@@ -163,6 +165,7 @@ class ProductController
 
             if ($payment_status === 'done') {
                 $payment_date = $_POST['payment_date'] ?? null;
+                $amount = $_POST['amount'] ?? 0;
 
                 if (empty($payment_date)) {
                     echo json_encode(["status" => "error", "message" => "Tanggal pembayaran wajib diisi"]);
@@ -174,7 +177,7 @@ class ProductController
                     exit;
                 }
 
-                $success = $this->model->updatePayment($id, $payment_date);
+                $success = $this->model->updatePayment($id, $payment_date, $amount);
                 echo json_encode([
                     "status"  => $success ? "success" : "error",
                     "message" => $success ? "Payment berhasil disimpan" : "Gagal menyimpan payment"
@@ -182,10 +185,12 @@ class ProductController
                 exit;
             } else {
                 $name       = trim($_POST['username'] ?? '');
+                $application  = trim($_POST['application_name'] ?? '');
                 $agreement  = trim($_POST['agreement_number'] ?? '');
                 $expired    = $_POST['order_date'] ?? '';
                 $harga      = !empty($_POST['harga_order']) ? $_POST['harga_order'] : 0;
                 $departemen = $_POST['departemen'] ?? '';
+                $email  = trim($_POST['email_name'] ?? '');
                 $foto       = $product['foto'];
 
                 if (isset($_FILES['foto']) && $_FILES['foto']['error'] === 0) {
@@ -201,7 +206,7 @@ class ProductController
                     move_uploaded_file($_FILES['foto']['tmp_name'], $targetDir . $foto);
                 }
 
-                $success = $this->model->update($id, $name, $agreement, $expired, $harga, $departemen, $foto);
+                $success = $this->model->update($id, $name, $application, $agreement, $expired, $harga, $departemen, $email, $foto);
                 if ($success) {
                     unset($_SESSION['last_email_fingerprint']);
                     $this->sendReminderIfNeeded();
@@ -323,7 +328,7 @@ class ProductController
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $headers = ['No', 'Agreement Number', 'User', 'Departemen', 'Order Date', 'Expired Date', 'Sisa Hari', 'Status'];
+        $headers = ['No', 'Application Name', 'Agreement Number', 'User', 'Departemen', 'Email', 'Order Date', 'Expired Date', 'Sisa Hari', 'Status'];
         $column = 'A';
         foreach ($headers as $h) {
             $sheet->setCellValue($column . '1', $h);
@@ -336,7 +341,7 @@ class ProductController
             'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => '4AA3FF']],
             'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
         ];
-        $sheet->getStyle('A1:H1')->applyFromArray($headerStyle);
+        $sheet->getStyle('A1:J1')->applyFromArray($headerStyle);
 
         $rowNum = 2;
         $no = 1;
@@ -364,24 +369,21 @@ class ProductController
             }
 
             $sheet->setCellValue('A' . $rowNum, $no++);
-            $sheet->setCellValueExplicit('B' . $rowNum, $row['agreement_number'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-            $sheet->setCellValue('C' . $rowNum, $row['username']);
-            $sheet->setCellValue('D' . $rowNum, $row['departemen']);
-
-            $sheet->setCellValue('E' . $rowNum, $orderDate->format("d M Y"));
-
-            $sheet->setCellValue('F' . $rowNum, $exp->format("d M Y"));
-
-            $sheet->setCellValue('G' . $rowNum, $hari_label);
-
-            $sheet->setCellValue('H' . $rowNum, $status_label);
-
-            $sheet->getStyle('A' . $rowNum . ':H' . $rowNum)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->setCellValue('B' . $rowNum, $row['application_name']);
+            $sheet->setCellValueExplicit('C' . $rowNum, $row['agreement_number'], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+            $sheet->setCellValue('D' . $rowNum, $row['username']);
+            $sheet->setCellValue('E' . $rowNum, $row['departemen']);
+            $sheet->setCellValue('F' . $rowNum, $row['email_name']);
+            $sheet->setCellValue('G' . $rowNum, $orderDate->format("d M Y"));
+            $sheet->setCellValue('H' . $rowNum, $exp->format("d M Y"));
+            $sheet->setCellValue('I' . $rowNum, $hari_label);
+            $sheet->setCellValue('J' . $rowNum, $status_label);
+            $sheet->getStyle('A' . $rowNum . ':J' . $rowNum)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
             $rowNum++;
         }
 
-        foreach (range('A', 'H') as $col) {
+        foreach (range('A', 'J') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
