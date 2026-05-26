@@ -11,48 +11,106 @@ if (!isset($_GET['id'])) {
 $id = (int) $_GET['id'];
 $mysqli = new mysqli("localhost", "root", "", "license_aplikasi");
 
-function renderUI($type, $data = null) {
+function renderUI($type, $data = null)
+{
     $primary_pastel = "#5d55cb";
     $bg_color = "#f3f4f9";
-    
+
     $title = ($type === 'success') ? "Hello Request" : "Wait a minute...";
     $icon = ($type === 'success') ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill";
     $icon_color = ($type === 'success') ? "#2ecc71" : "#f39c12";
-    $message = ($type === 'success') 
-        ? "Request Quotation berhasil dikirim." 
-        : "User <strong>".htmlspecialchars($data['username'])."</strong> sebelumnya user ini sudah pernah dimintakan penawaran.";
+    $message = ($type === 'success')
+        ? "Request Quotation berhasil dikirim."
+        : "User <strong>" . htmlspecialchars($data['username']) . "</strong> sebelumnya user ini sudah pernah dimintakan penawaran.";
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Request Status</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <style>
-        body { background-color: <?= $bg_color ?>; font-family: 'Poppins', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
-        .card-custom { background: #ffffff; border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(162, 155, 254, 0.15); text-align: center; max-width: 450px; width: 90%; }
-        .icon-box { font-size: 4rem; color: <?= $icon_color ?>; margin-bottom: 20px; }
-        h2 { font-weight: 700; color: #2d3436; margin-bottom: 10px; }
-        p { color: #636e72; line-height: 1.6; margin-bottom: 30px; }
-        .btn-pastel { background-color: <?= $primary_pastel ?>; color: white; border: none; border-radius: 12px; padding: 12px 25px; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-block; margin: 5px; }
-        .btn-pastel:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(93, 85, 203, 0.3); color: white; }
-        .btn-outline { border: 2px solid #edeff2; color: #636e72; background: transparent; }
-    </style>
-</head>
-<body>
-    <div class="card-custom">
-        <div class="icon-box"><i class="bi <?= $icon ?>"></i></div>
-        <h2><?= $title ?></h2>
-        <p><?= $message ?></p>
-        <div class="d-flex flex-column gap-2">
-            <a href="http://10.87.203.183/license_aplikasi/views/auth/login.php" class="btn-pastel">Back To Login</a>
-            <a href="javascript:void(0)" onclick="window.close();" class="btn-pastel btn-outline">Close Window</a>
+    <!DOCTYPE html>
+    <html lang="id">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Request Status</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <style>
+            body {
+                background-color: <?= $bg_color ?>;
+                font-family: 'Poppins', sans-serif;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0;
+            }
+
+            .card-custom {
+                background: #ffffff;
+                border-radius: 24px;
+                padding: 40px;
+                box-shadow: 0 10px 30px rgba(162, 155, 254, 0.15);
+                text-align: center;
+                max-width: 450px;
+                width: 90%;
+            }
+
+            .icon-box {
+                font-size: 4rem;
+                color: <?= $icon_color ?>;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                font-weight: 700;
+                color: #2d3436;
+                margin-bottom: 10px;
+            }
+
+            p {
+                color: #636e72;
+                line-height: 1.6;
+                margin-bottom: 30px;
+            }
+
+            .btn-pastel {
+                background-color: <?= $primary_pastel ?>;
+                color: white;
+                border: none;
+                border-radius: 12px;
+                padding: 12px 25px;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.3s;
+                display: inline-block;
+                margin: 5px;
+            }
+
+            .btn-pastel:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(93, 85, 203, 0.3);
+                color: white;
+            }
+
+            .btn-outline {
+                border: 2px solid #edeff2;
+                color: #636e72;
+                background: transparent;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="card-custom">
+            <div class="icon-box"><i class="bi <?= $icon ?>"></i></div>
+            <h2><?= $title ?></h2>
+            <p><?= $message ?></p>
+            <div class="d-flex flex-column gap-2">
+                <a href="http://10.87.203.183/license_aplikasi/views/auth/login.php" class="btn-pastel">Back To Login</a>
+                <a href="javascript:void(0)" onclick="window.close();" class="btn-pastel btn-outline">Close Window</a>
+            </div>
         </div>
-    </div>
-</body>
-</html>
+    </body>
+
+    </html>
 <?php
 }
 
@@ -67,15 +125,17 @@ $stmt->execute();
 $result = $stmt->get_result();
 $data = $result->fetch_assoc();
 
-if (!$data) { die("Produk tidak ditemukan"); }
- 
+if (!$data) {
+    die("Produk tidak ditemukan");
+}
+
 if ($data['request_count'] > 0) {
     renderUI('info', $data);
     exit;
 }
 
 $exp = new DateTime($data['order_date'], new DateTimeZone('Asia/Jakarta'));
-$orderDate = clone $exp; 
+$orderDate = clone $exp;
 $orderDate->modify('-1 year');
 
 require_once __DIR__ . '/../vendor/phpmailer/src/PHPMailer.php';
@@ -118,12 +178,20 @@ $mail->Body = "
                             
                             <table width='100%' style='margin-top: 20px; border-collapse: collapse; border-radius: 12px; overflow: hidden; border: 1px solid #f1f2f6;'>
                                 <tr>
+                                    <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; width: 35%; border-bottom: 1px solid #f1f2f6;'>APPLICATION</td>
+                                    <td style='padding: 12px; color: #2d3436; font-weight: bold; font-size: 14px; border-bottom: 1px solid #f1f2f6;'>" . htmlspecialchars($data['application_name']) . "</td>
+                                </tr>
+                                <tr>
                                     <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; width: 40%; text-transform: uppercase;'>Agreement No</td>
                                     <td style='padding: 12px; color: #2d3436; font-weight: bold; font-size: 14px; border-bottom: 1px solid #f1f2f6;'>{$data['agreement_number']}</td>
                                 </tr>
                                 <tr>
                                     <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; text-transform: uppercase;'>User</td>
                                     <td style='padding: 12px; color: #2d3436; font-size: 14px; border-bottom: 1px solid #f1f2f6;'>{$data['username']}</td>
+                                </tr>
+                                 <tr>
+                                    <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; border-bottom: 1px solid #f1f2f6;'>USER NAME / EMAIL</td>
+                                    <td style='padding: 12px; color: #2d3436; font-size: 14px; border-bottom: 1px solid #f1f2f6;'>{$data['username']} (" . htmlspecialchars($data['email_name']) . ")</td>
                                 </tr>
                                 <tr>
                                     <td style='padding: 12px; background: #f8f9ff; color: #7f8c8d; font-size: 12px; text-transform: uppercase;'>Departemen</td>
@@ -152,7 +220,7 @@ $mail->Body = "
                         </td>
                     </tr>
                 </table>
-                <p style='font-size: 11px; color: #b2bec3; margin-top: 20px;'>&copy; ".date('Y')." PT Hexindo Adiperkasa Tbk. Automated Notification.</p>
+                <p style='font-size: 11px; color: #b2bec3; margin-top: 20px;'>&copy; " . date('Y') . " PT Hexindo Adiperkasa Tbk. Automated Notification.</p>
             </td>
         </tr>
     </table>
@@ -161,7 +229,9 @@ $mail->Body = "
 
 if (!empty($data['foto'])) {
     $filePath = __DIR__ . '/../public/uploads/' . $data['foto'];
-    if (file_exists($filePath)) { $mail->addAttachment($filePath); }
+    if (file_exists($filePath)) {
+        $mail->addAttachment($filePath);
+    }
 }
 
 if (!$mail->send()) {

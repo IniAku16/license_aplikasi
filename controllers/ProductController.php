@@ -27,56 +27,79 @@ class ProductController
 
     public function index()
     {
-        $products = $this->model->getAllProducts();
-        $data = [];
-
-        $activeCount = 0;
-        $expiringCount = 0;
-        $expiredCount = 0;
-
+        $productsResult = $this->model->getAllProducts();
         date_default_timezone_set("Asia/Jakarta");
         $today = date("Y-m-d");
 
+        $allProducts      = [];
+        $groupedProducts  = [];
+        $appStats         = [];
         $milestoneProducts = [];
 
-        while ($row = mysqli_fetch_assoc($products)) {
-            $expired = $row['order_date'];
-            $request_count = $row['request_count'] ?? 0;
+        $activeCount   = 0;
+        $expiringCount = 0;
+        $expiredCount  = 0;
 
-            if (empty($expired)) {
-                $status = "unknown";
-                $color = "secondary";
+        while ($row = mysqli_fetch_assoc($productsResult)) {
+            $expiredDate  = $row['order_date'];
+            $requestCount = $row['request_count'] ?? 0;
+            $appName      = !empty($row['application_name']) ? $row['application_name'] : 'Lainnya';
+
+            if (empty($expiredDate)) {
+                $status    = "unknown";
+                $color     = "secondary";
                 $sisa_hari = null;
             } else {
-                $diff = floor((strtotime($expired) - strtotime($today)) / 86400);
-                $sisa_hari = $diff;
+                $diff      = floor((strtotime($expiredDate) - strtotime($today)) / 86400);
+                $sisa_hari = (int)$diff;
 
                 if ($diff < 0) {
                     $status = "expired";
-                    $color = "danger";
+                    $color  = "danger";
                     $expiredCount++;
                 } elseif ($diff <= 30) {
                     $status = "expiring";
-                    $color = "warning";
+                    $color  = "warning";
                     $expiringCount++;
-                    if ($request_count == 0) {
+
+                    if ($requestCount == 0) {
                         $milestoneProducts[] = $row['id'] . '|' . $diff;
                     }
                 } else {
                     $status = "active";
-                    $color = "success";
+                    $color  = "success";
                     $activeCount++;
                 }
             }
 
-            $row['status'] = $status;
-            $row['color'] = $color;
+            $row['status']    = $status;
+            $row['color']     = $color;
             $row['sisa_hari'] = $sisa_hari;
-            $data[] = $row;
+            $allProducts[] = $row;
+            $groupedProducts[$appName][] = $row;
+
+            if (!isset($appStats[$appName])) {
+                $appStats[$appName] = [
+                    'total'        => 0,
+                    'min_sisa'     => null,
+                    'expired_soon' => 0
+                ];
+            }
+
+            $appStats[$appName]['total']++;
+            if ($status !== 'active') {
+                $appStats[$appName]['expired_soon']++;
+            }
+
+            if ($sisa_hari !== null) {
+                if ($appStats[$appName]['min_sisa'] === null || $sisa_hari < $appStats[$appName]['min_sisa']) {
+                    $appStats[$appName]['min_sisa'] = $sisa_hari;
+                }
+            }
         }
 
-        $products = $data;
-        $totalProducts = count($products);
+        $products      = $allProducts;
+        $totalProducts = count($allProducts);
 
         $skipEmail = $_SESSION['skip_email_after_delete'] ?? false;
         unset($_SESSION['skip_email_after_delete']);
@@ -99,7 +122,7 @@ class ProductController
 
             $_SESSION['last_email_fingerprint'] = $currentFingerprint;
 
-            $dataReminder = $milestoneProducts; 
+            $dataReminder = $milestoneProducts;
 
             ob_start();
             include __DIR__ . "/../cron/email_reminder.php";
@@ -409,5 +432,17 @@ class ProductController
         $_SESSION['skip_email_after_delete'] = true;
         header("Location: index.php");
         exit;
+    }
+
+    public function prosesRequest($id)
+    {
+        $stmt = $this->koneksi->prepare("UPDATE products SET request_count = 1 WHERE id = ?");
+        $stmt->bind_param("i", $id);
+
+        if ($stmt->execute()) {
+            echo "<script>alert('Request Berhasil Diproses!'); window.location='index.php';</script>";
+        } else {
+            echo "Gagal memproses data.";
+        }
     }
 }

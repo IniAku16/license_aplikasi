@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Laporan Riwayat License Keseluruhan</title>
     <style>
-        @page { margin: 50px 40px; }
+        @page {
+            margin: 60px 40px;
+        }
+
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
             font-size: 11px;
             color: #2d3436;
             margin: 0;
             padding: 0;
-            line-height: 1.4;
+            line-height: 1.5;
+            background-color: #ffffff;
         }
 
         .main-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             border-bottom: 3px solid #5d55cb;
             padding-bottom: 20px;
         }
@@ -25,6 +30,7 @@
             font-size: 24px;
             margin: 0;
             color: #2d3436;
+            line-height: 1.2;
         }
 
         .main-header h1 span {
@@ -32,42 +38,60 @@
         }
 
         .main-header p {
-            margin: 5px 0 0;
+            margin: 8px 0 0;
             color: #7f8c8d;
             text-transform: uppercase;
             letter-spacing: 2px;
             font-size: 10px;
+            font-weight: 500;
         }
 
         .product-block {
             margin-bottom: 40px;
-            page-break-inside: avoid; 
+            page-break-inside: avoid;
         }
 
         .product-summary {
             background-color: #f8f9ff;
-            border-left: 5px solid #5d55cb;
-            padding: 15px;
-            border-radius: 0 10px 10px 0;
-            margin-bottom: 10px;
+            border-left: 4px solid #5d55cb;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 5px;
+            border-top: 1px solid #eef0f8;
+            border-right: 1px solid #eef0f8;
+            border-bottom: 1px solid #eef0f8;
         }
 
         .product-summary table {
             width: 100%;
+            border-collapse: collapse;
+        }
+
+        .product-summary td {
+            vertical-align: middle;
+            padding: 4px 0;
         }
 
         .product-title {
             font-size: 14px;
             font-weight: bold;
-            color: #5d55cb;
-            margin-bottom: 5px;
+            color: #2d3436;
+            margin-bottom: 2px;
+        }
+
+        .product-subtitle {
+            font-size: 11px;
+            color: #7f8c8d;
+            font-weight: 500;
         }
 
         .info-label {
-            color: #7f8c8d;
+            color: #95a5a6;
             font-size: 9px;
             text-transform: uppercase;
             font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
         }
 
         .info-value {
@@ -75,25 +99,37 @@
             color: #2d3436;
         }
 
+        .badge-total {
+            background-color: #eaf4ff;
+            color: #5d55cb;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 10px;
+            display: inline-block;
+        }
+
         .detail-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .detail-table th {
             background-color: #ffffff;
             color: #7f8c8d;
             text-align: left;
-            padding: 8px 12px;
+            padding: 10px 12px;
             font-size: 9px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             border-bottom: 2px solid #edeff2;
         }
 
         .detail-table td {
             padding: 10px 12px;
             border-bottom: 1px solid #f1f2f6;
+            vertical-align: middle;
         }
 
         .detail-table tr:nth-child(even) {
@@ -101,19 +137,13 @@
         }
 
         .amount {
-            font-weight: bold;
+            font-weight: 700;
             text-align: right;
             color: #2d3436;
         }
 
-        .text-center { text-align: center; }
-
-        .badge-total {
-            background-color: #eaf4ff;
-            color: #5d55cb;
-            padding: 2px 8px;
-            border-radius: 5px;
-            font-weight: bold;
+        .text-center {
+            text-align: center;
         }
 
         .footer {
@@ -123,37 +153,50 @@
             right: 0;
             text-align: center;
             font-size: 9px;
-            color: #3a3b3b;
+            color: #bdc3c7;
+            border-top: 1px solid #f1f2f6;
+            padding-top: 10px;
         }
 
-        .page-number:after { content: counter(page); }
+        .page-number:after {
+            content: counter(page);
+        }
     </style>
 </head>
+
 <body>
 
     <div class="main-header">
         <h1>Payment <span>Summary Report</span></h1>
-        <p>Seluruh Riwayat Lisensi Aplikasi?></p>
+        <p>Seluruh Riwayat Lisensi Aplikasi</p>
     </div>
 
     <?php if (!empty($histories)) : ?>
         <?php foreach ($histories as $index => $item) : ?>
             <div class="product-block">
+
                 <div class="product-summary">
-                    <div class="product-title">#<?= htmlspecialchars($item['agreement_number']) ?> - <?= htmlspecialchars($item['username']) ?></div>
-                    <table border="0">
+                    <table>
                         <tr>
-                            <td width="33%">
+                            <td>
+                                <div class="product-title">#<?= htmlspecialchars($item['agreement_number'] ?? '-') ?> — <?= htmlspecialchars($item['username'] ?? '-') ?></div>
+                                <div class="product-subtitle">
+                                    <?= htmlspecialchars($item['application_name'] ?? 'Nama Aplikasi Tidak Terdeteksi') ?>
+                                    <?php if (!empty($item['email_name'])) : ?>
+                                        <span style="color: #7f8c8d; margin-left: 5px;">(<?= htmlspecialchars($item['email_name']) ?>)</span>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                            <td width="25%">
                                 <div class="info-label">Departemen</div>
-                                <div class="info-value"><?= htmlspecialchars($item['departemen']) ?></div>
+                                <div class="info-value" style="margin-bottom: 5px;"><?= htmlspecialchars($item['departemen'] ?? '-') ?></div>
+                                <div class="info-value"><span class="badge-total"><?= htmlspecialchars($item['total_transaksi'] ?? 0) ?>x Pembayaran</span></div>
                             </td>
-                            <td width="33%">
-                                <div class="info-label">Total Transaksi</div>
-                                <div class="info-value"><span class="badge-total"><?= $item['total_transaksi'] ?> Kali Pembayaran</span></div>
-                            </td>
-                            <td width="33%" align="right">
+                            <td width="30%" align="right">
                                 <div class="info-label">Akumulasi Biaya</div>
-                                <div class="info-value" style="color: #5d55cb; font-size: 14px;">Rp <?= number_format($item['total_amount'], 0, ',', '.') ?></div>
+                                <div class="info-value" style="color: #5d55cb; font-size: 16px; font-weight: 800; margin-top: 2px;">
+                                    Rp <?= number_format($item['total_amount'] ?? 0, 0, ',', '.') ?>
+                                </div>
                             </td>
                         </tr>
                     </table>
@@ -164,31 +207,34 @@
                         <tr>
                             <th width="40" class="text-center">No</th>
                             <th>Tanggal Pembayaran</th>
-                            <th style="text-align: right;">Nominal Pembayaran</th>
+                            <th style="text-align: right; padding-right: 12px;">Nominal Pembayaran</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($item['details'])) : ?>
                             <?php foreach ($item['details'] as $dIdx => $detail) : ?>
                                 <tr>
-                                    <td class="text-center" style="color: #bdc3c7;"><?= $dIdx + 1 ?></td>
-                                    <td><?= date('d M Y', strtotime($detail['payment_date'])) ?></td>
-                                    <td class="amount">Rp <?= number_format($detail['amount'], 0, ',', '.') ?></td>
+                                    <td class="text-center" style="color: #bdc3c7; font-weight: 500;"><?= $dIdx + 1 ?></td>
+                                    <td><?= isset($detail['payment_date']) ? date('d M Y', strtotime($detail['payment_date'])) : '-' ?></td>
+                                    <td class="amount">Rp <?= number_format($detail['amount'] ?? 0, 0, ',', '.') ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else : ?>
                             <tr>
-                                <td colspan="3" class="text-center" style="color: #bdc3c7; padding: 20px;">Tidak ada riwayat detail untuk produk ini.</td>
+                                <td colspan="3" class="text-center" style="color: #95a5a6; padding: 20px; font-style: italic;">
+                                    Tidak ada riwayat detail untuk produk ini.
+                                </td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
+
             </div>
         <?php endforeach; ?>
     <?php else : ?>
-        <div style="text-align: center; padding: 100px; color: #bdc3c7;">
-            <h3>Data tidak ditemukan</h3>
-            <p>Belum ada riwayat pembayaran dalam database.</p>
+        <div style="text-align: center; padding: 100px 0; color: #bdc3c7;">
+            <h3 style="margin: 0 0 5px 0; color: #7f8c8d;">Data tidak ditemukan</h3>
+            <p style="margin: 0;">Belum ada riwayat pembayaran yang tercatat dalam sistem.</p>
         </div>
     <?php endif; ?>
 
@@ -197,4 +243,5 @@
     </div>
 
 </body>
+
 </html>

@@ -14,23 +14,24 @@ if ($mysqli->connect_error) {
 $today = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
 $today->setTime(0, 0, 0);
 
-$query = $mysqli->query("SELECT id, username, order_date, departemen, agreement_number FROM products WHERE request_count = 0 AND DATEDIFF(order_date, CURDATE()) <= 30");
-
+$query = $mysqli->query("SELECT id, username, application_name, email_name, order_date, departemen, agreement_number FROM products WHERE request_count = 0 AND DATEDIFF(order_date, CURDATE()) <= 30");
 $rows = "";
 $kirim_email = false;
 $no = 1;
 
 $primary_pastel = "#5d55cb";
-$bg_color = "#eaebf3"; 
+$bg_color = "#eaebf3";
 
 while ($data = $query->fetch_assoc()) {
     $nama = htmlspecialchars($data['username']);
+    $app_name = htmlspecialchars($data['application_name']);
+    $email_user = htmlspecialchars($data['email_name']);
     $agreement = htmlspecialchars($data['agreement_number']);
     $departemen = htmlspecialchars($data['departemen']);
     $exp = new DateTime($data['order_date'], new DateTimeZone('Asia/Jakarta'));
 
     $orderDate = clone $exp;
-    $orderDate->modify('-1 year'); 
+    $orderDate->modify('-1 year');
 
     $interval = $today->diff($exp);
     $selisih_hari = (int)$interval->format("%r%a");
@@ -41,19 +42,19 @@ while ($data = $query->fetch_assoc()) {
 
     if ($selisih_hari < 0) {
         $status_label = "Expired";
-        $badge_bg = "#e02424"; 
+        $badge_bg = "#e02424";
         $badge_text = "#ffffff";
         $hari_style = "color: #e02424; font-weight: 700;";
         $hari_label = abs($selisih_hari) . " Hari Lalu";
     } elseif ($selisih_hari <= 7) {
         $status_label = "Expiring";
-        $badge_bg = "#f59e0b"; 
+        $badge_bg = "#f59e0b";
         $badge_text = "#ffffff";
         $hari_style = "color: #d97706; font-weight: 700;";
         $hari_label = $selisih_hari . " Hari Lagi";
     } else {
         $status_label = "Active";
-        $badge_bg = "#10b981"; 
+        $badge_bg = "#10b981";
         $badge_text = "#ffffff";
         $hari_style = "color: #5d55cb; font-weight: 700;";
         $hari_label = $selisih_hari . " Hari";
@@ -65,24 +66,26 @@ while ($data = $query->fetch_assoc()) {
     <tr style='border-bottom: 1px solid #e5e7eb; background-color: $bg_row;'>
         <td style='padding: 15px 10px; text-align: center; color: #4b5563; font-size: 13px; font-weight: 600;'>$no</td>
         <td style='padding: 15px 10px;'>
-            <div style='font-weight: 700; color: #111827; font-size: 14px;'>$agreement</div>
+            <div style='font-weight: 700; color: #111827; font-size: 14px;'>$app_name</div>
+            <div style='font-size: 11px; color: #6b7280; margin-top: 2px;'>ID: $agreement</div>
         </td>
         <td style='padding: 15px 10px;'>
-            <div style='color: #111827; font-weight: 600; font-size: 14px;'>$nama</div>
-            <div style='font-size: 11px; color: #5d55cb; background: #eeebff; display: inline-block; padding: 2px 10px; border-radius: 6px; font-weight: 600; margin-top: 4px;'>$departemen</div>
+            <div style='color: #111827; font-weight: 600; font-size: 13px;'>$nama</div>
+            <div style='font-size: 11px; color: #6b7280;'>$email_user</div>
+            <div style='font-size: 10px; color: #5d55cb; background: #eeebff; display: inline-block; padding: 1px 8px; border-radius: 4px; font-weight: 600; margin-top: 4px;'>$departemen</div>
         </td>
-        <td style='padding: 15px 10px; text-align: center;'>" . $orderDate->format("d M Y") . "</td>
-        <td style='padding: 15px 10px; text-align: center;'>" . $exp->format("d M Y") . "</td>
+        <td style='padding: 15px 10px; text-align: center; font-size: 12px; color: #4b5563;'>" . $orderDate->format("d M Y") . "</td>
+        <td style='padding: 15px 10px; text-align: center; font-size: 12px; color: #4b5563; font-weight: 600;'>" . $exp->format("d M Y") . "</td>
         <td style='padding: 15px 10px; text-align: center; $hari_style font-size: 13px;'>$hari_label</td>
         <td style='padding: 15px 10px; text-align: center;'>
-            <span style='background: $badge_bg; color: $badge_text; padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+            <span style='background: $badge_bg; color: $badge_text; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase;'>
                 $status_label
             </span>
         </td>
         <td style='padding: 15px 10px; text-align: center;'>
-            <a href='http://10.87.203.183/license_aplikasi/cron/request.php?id={$data['id']}'
-               style='background: $primary_pastel; color: #ffffff !important; padding: 10px 18px; border-radius: 12px; text-decoration: none; font-size: 12px; font-weight: 700; display: inline-block; box-shadow: 0 4px 12px rgba(93, 85, 203, 0.25); text-transform: uppercase; letter-spacing: 0.5px;'>
-               Request
+            <a href='http://10.87.203.183/license_aplikasi/public/index.php?action=proses-request&id={$data['id']}'
+               style='background: $primary_pastel; color: #ffffff !important; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: 700; display: inline-block;'>
+               REQUEST
             </a>
         </td>
     </tr>";
@@ -130,7 +133,7 @@ if ($kirim_email) {
                                         <thead>
                                             <tr style='background-color: $primary_pastel;'>
                                                 <th style='padding: 15px 10px; text-align: center; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>No</th>
-                                                <th style='padding: 15px 10px; text-align: left; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Agreement</th>
+                                                <th style='padding: 15px 10px; text-align: left; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Application</th>
                                                 <th style='padding: 15px 10px; text-align: left; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>User / Dept</th>
                                                 <th style='padding: 15px 10px; text-align: center; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Order Date</th>
                                                 <th style='padding: 15px 10px; text-align: center; color: #ffffff; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;'>Expired Date</th>
@@ -195,7 +198,7 @@ if ($kirim_email) {
     $mail->From = "ithexindo@hexindo-tbk.co.id";
     $mail->FromName = "Application License Reminder";
     $mail->addAddress("ara.rhzz16@gmail.com");
-    /*$mail->addAddress("denipratama@hexindo-tbk.co.id");*/
+    $mail->addAddress("denipratama@hexindo-tbk.co.id");
 
     $mail->isHTML(true);
     $mail->Subject = "License Expiring Soon (≤ 30 Hari)";

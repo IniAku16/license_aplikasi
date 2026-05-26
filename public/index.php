@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("X-Frame-Options: DENY"); 
+header("X-Frame-Options: DENY");
 header("X-Content-Type-Options: nosniff");
 
 require_once __DIR__ . "/../config/koneksi.php";
@@ -29,20 +29,20 @@ $registerController = new RegisterController($koneksi);
 $forgotPasswordController = new ForgotPasswordController($koneksi);
 
 switch ($action) {
-     case 'show-login':
-        $authController->showLoginForm(); 
+    case 'show-login':
+        $authController->showLoginForm();
         break;
     case 'login-process':
         $authController->login();
         break;
     case 'show-register':
-        $registerController->showRegisterForm(); 
+        $registerController->showRegisterForm();
         break;
     case 'register-process':
         $registerController->register();
         break;
     case 'show-forget':
-        $forgotPasswordController->showForgetForm(); 
+        $forgotPasswordController->showForgetForm();
         break;
     case 'forget-process':
         $forgotPasswordController->process();
@@ -55,6 +55,9 @@ switch ($action) {
         break;
     case 'delete':
         $productController->delete($id);
+        break;
+    case 'proses-request':
+        $productController->prosesRequest($_GET['id']);
         break;
     case 'history':
         $productController->history();

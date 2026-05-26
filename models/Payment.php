@@ -60,17 +60,25 @@ class PaymentModel
     public function getAllGroupedHistoryWithDetails()
     {
         $sqlProducts = "SELECT 
-                        p.id AS product_id,
-                        p.username,
-                        p.agreement_number,
-                        p.departemen,
-                        COUNT(py.id) AS total_transaksi,
-                        SUM(py.amount) AS total_amount,
-                        MAX(py.payment_date) AS last_payment_date
-                    FROM products p
-                    INNER JOIN payments py ON p.id = py.product_id
-                    GROUP BY p.id, p.username, p.agreement_number, p.departemen
-                    ORDER BY p.username ASC";
+                    p.id AS product_id,
+                    p.username,
+                    p.application_name,
+                    p.email_name,
+                    p.agreement_number,
+                    p.departemen,
+                    COUNT(py.id) AS total_transaksi,
+                    SUM(py.amount) AS total_amount,
+                    MAX(py.payment_date) AS last_payment_date
+                FROM products p
+                INNER JOIN payments py ON p.id = py.product_id
+                GROUP BY 
+                    p.id,
+                    p.username,
+                    p.application_name,
+                    p.email_name,
+                    p.agreement_number,
+                    p.departemen
+                ORDER BY p.username ASC";
 
         $resultProducts = mysqli_query($this->db, $sqlProducts);
         $data = [];
@@ -79,9 +87,9 @@ class PaymentModel
             $productId = $product['product_id'];
 
             $sqlDetails = "SELECT payment_date, amount
-                       FROM payments
-                       WHERE product_id = ?
-                       ORDER BY payment_date ASC, id ASC";
+                   FROM payments
+                   WHERE product_id = ?
+                   ORDER BY payment_date ASC, id ASC";
 
             $stmt = $this->db->prepare($sqlDetails);
             $stmt->bind_param("i", $productId);

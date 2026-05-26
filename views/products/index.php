@@ -31,19 +31,19 @@ $activePage = 'products';
 
         .main-wrapper {
             display: flex;
-            min-height: 100vh;
             width: 100%;
         }
 
         #content {
             flex: 1;
-            margin-left: 260px;
+            margin-left: 280px;
             padding: 30px;
             transition: var(--transition);
         }
 
         #content.expanded {
             margin-left: 85px;
+            width: calc(100% - 85px);
         }
 
         .card-custom {
@@ -172,6 +172,55 @@ $activePage = 'products';
                 margin-left: 0;
             }
         }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #mainTable {
+            min-width: 1200px;
+        }
+
+#photoModal .modal-content {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 24px;
+    color: #2d3436;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.img-container {
+    overflow: auto; 
+    padding: 20px;
+    max-height: 75vh; 
+    text-align: center; 
+    background: #f8f9fa; 
+}
+
+#imgPreview {
+    max-width: 100%;
+    height: auto;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: zoom-in;
+    border-radius: 8px;
+    display: inline-block;
+    transform-origin: top center; 
+    margin-top: 10px;
+}
+
+#imgPreview.zoomed {
+    transform: scale(2); 
+    cursor: zoom-out;
+    margin-bottom: 50px;
+}
+
+#photoModal .modal-header {
+    border-bottom: 1px solid #eee;
+    padding: 15px 25px;
+    background: white;
+    z-index: 10;
+}
     </style>
 </head>
 
@@ -270,11 +319,22 @@ $activePage = 'products';
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <label class="small fw-bold text-muted mb-1">Masa Aktif</label>
+                            <label class="small fw-bold text-muted mb-1">Filter Data</label>
                             <select id="filterExpired" class="form-select">
                                 <option value="">Semua Data</option>
-                                <option value="week">Expired Minggu Ini</option>
-                                <option value="month">Expired Bulan Ini</option>
+
+                                <optgroup label="Berdasarkan Waktu">
+                                    <option value="week">Expired Minggu Ini</option>
+                                    <option value="month">Expired Bulan Ini</option>
+                                </optgroup>
+
+                                <optgroup label="Berdasarkan Aplikasi">
+                                    <?php if (!empty($appStats)) : ?>
+                                        <?php foreach (array_keys($appStats) as $appName) : ?>
+                                            <option value="app:<?= htmlspecialchars($appName) ?>"><?= htmlspecialchars($appName) ?></option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </optgroup>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -324,7 +384,7 @@ $activePage = 'products';
                                         if ($product['status'] == "expired") $statusColor = "danger";
                                         elseif ($product['status'] == "expiring") $statusColor = "warning";
                                         ?>
-                                        <tr>
+                                        <tr data-app="<?= htmlspecialchars($product['application_name']) ?>">
                                             <td class="text-muted small row-number"><?= $no++ ?></td>
                                             <td>
                                                 <div class="fw-bold text-dark"><?= htmlspecialchars($product['application_name']) ?></div>
@@ -446,7 +506,7 @@ $activePage = 'products';
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Expired Date</label>
-                                <input type="date" class="form-control" name="order_date" min="<?php echo date('Y-m-d'); ?>" required>
+                                <input type="date" class="form-control" name="order_date" required>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -513,7 +573,7 @@ $activePage = 'products';
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Expired Date</label>
-                                <input type="date" class="form-control" id="edit_order_date" name="order_date" min="<?php echo date('Y-m-d'); ?>" required>
+                                <input type="date" class="form-control" id="edit_order_date" name="order_date" required>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -553,12 +613,12 @@ $activePage = 'products';
                         <h5 class="modal-title">Konfirmasi Payment</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                   <div class="modal-body">
+                    <div class="modal-body">
                         <input type="hidden" id="payment_product_id" />
 
                         <div class="mb-3">
                             <label for="payment_date" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="payment_date" min="<?php echo date('Y-m-d'); ?>" required>
+                            <input type="date" class="form-control" id="payment_date" required>
                         </div>
 
                         <div class="mb-3">
@@ -576,19 +636,26 @@ $activePage = 'products';
     </div>
 
     <div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content card-custom">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Lampiran Foto</h5>
+                    <h5 class="modal-title text-dark"><i class="bi bi-image me-2"></i>Preview Foto Nota</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body text-center">
-                    <img src="" id="imgPreview" class="img-fluid rounded shadow-sm" alt="Preview">
+                <div class="modal-body p-0">
+                    <div class="img-container">
+                        <img src="" id="imgPreview" alt="Preview">
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between bg-light">
+                    <p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i>Klik gambar untuk Zoom In/Out</p>
+                    <a href="" id="downloadBtn" download class="btn btn-primary btn-sm">
+                        <i class="bi bi-download me-2"></i>Download Image
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -728,7 +795,7 @@ $activePage = 'products';
 
             const id = document.getElementById('payment_product_id').value;
             const date = document.getElementById('payment_date').value;
-             const amount = document.getElementById('payment_amount').value;
+            const amount = document.getElementById('payment_amount').value;
 
             const formData = new FormData();
             formData.append('payment_status', 'done');
@@ -758,12 +825,24 @@ $activePage = 'products';
             button.addEventListener('click', function() {
                 const imgSrc = this.getAttribute('data-img');
                 const imgElement = document.getElementById('imgPreview');
+                const downloadBtn = document.getElementById('downloadBtn');
+
+                imgElement.classList.remove('zoomed');
 
                 imgElement.src = imgSrc;
+                downloadBtn.href = imgSrc;
 
                 const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
                 photoModal.show();
             });
+        });
+
+        document.getElementById('imgPreview').addEventListener('click', function() {
+            this.classList.toggle('zoomed');
+        });
+
+        document.getElementById('photoModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('imgPreview').classList.remove('zoomed');
         });
 
         let currentPage = 1;
@@ -781,20 +860,27 @@ $activePage = 'products';
             today.setHours(0, 0, 0, 0);
 
             let filteredRows = originalRows.filter(row => {
+                if (row.classList.contains('group-header')) return false;
                 if (row.cells.length < 2) return false;
 
                 const textContent = row.innerText.toLowerCase();
                 const orderDateStr = row.cells[4].innerText;
                 const expiredDate = new Date(orderDateStr);
+                const rowApp = row.getAttribute('data-app');
 
                 let matchesSearch = textContent.includes(searchText);
                 let matchesFilter = true;
 
                 if (filterValue !== "") {
-                    const diffTime = expiredDate - today;
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    if (filterValue === 'week' && (diffDays < 0 || diffDays > 7)) matchesFilter = false;
-                    if (filterValue === 'month' && (diffDays < 0 || diffDays > 30)) matchesFilter = false;
+                    if (filterValue.startsWith('app:')) {
+                        const targetApp = filterValue.replace('app:', '');
+                        if (rowApp !== targetApp) matchesFilter = false;
+                    } else {
+                        const diffTime = expiredDate - today;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        if (filterValue === 'week' && (diffDays < 0 || diffDays > 7)) matchesFilter = false;
+                        if (filterValue === 'month' && (diffDays < 0 || diffDays > 30)) matchesFilter = false;
+                    }
                 }
                 return matchesSearch && matchesFilter;
             });
@@ -895,4 +981,4 @@ $activePage = 'products';
     </script>
 </body>
 
-</html>
+</html> 
