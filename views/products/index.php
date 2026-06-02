@@ -749,6 +749,12 @@ $activePage = 'products';
             }
         });
 
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'license_app_logout') {
+                window.location.href = '/license_aplikasi/public/index.php?action=show-login';
+            }
+        });
+
         const searchInput = document.getElementById('searchProduct');
         const filterSelect = document.getElementById('filterExpired');
         const tableRows = document.querySelectorAll('table tbody tr');

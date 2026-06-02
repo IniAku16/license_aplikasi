@@ -115,19 +115,55 @@ class ProductController
     {
         sort($milestoneProducts);
         $currentFingerprint = md5(implode(',', $milestoneProducts));
+        $today = date("Y-m-d");
 
-        $lastFingerprint = $_SESSION['last_email_fingerprint'] ?? '';
+        $reminderLog = $this->loadReminderLog();
+        $lastFingerprint = $reminderLog['fingerprint'] ?? '';
+        $lastSentDate = $reminderLog['date'] ?? '';
 
-        if ($currentFingerprint !== $lastFingerprint) {
-
-            $_SESSION['last_email_fingerprint'] = $currentFingerprint;
-
-            $dataReminder = $milestoneProducts;
-
-            ob_start();
-            include __DIR__ . "/../cron/email_reminder.php";
-            ob_end_clean();
+        // Jika sudah terkirim hari ini untuk set item yang sama, jangan kirim ulang.
+        if ($currentFingerprint === $lastFingerprint && $lastSentDate === $today) {
+            return;
         }
+
+        $_SESSION['last_email_fingerprint'] = $currentFingerprint;
+        $this->saveReminderLog([
+            'fingerprint' => $currentFingerprint,
+            'date' => $today,
+        ]);
+
+        $dataReminder = $milestoneProducts;
+
+        ob_start();
+        include __DIR__ . "/../cron/email_reminder.php";
+        ob_end_clean();
+    }
+
+    private function getReminderLogPath()
+    {
+        return __DIR__ . '/../cron/last_email_reminder.json';
+    }
+
+    private function loadReminderLog()
+    {
+        $path = $this->getReminderLogPath();
+        if (!file_exists($path)) {
+            return [];
+        }
+
+        $contents = file_get_contents($path);
+        if ($contents === false) {
+            return [];
+        }
+
+        $data = json_decode($contents, true);
+        return is_array($data) ? $data : [];
+    }
+
+    private function saveReminderLog(array $data)
+    {
+        $path = $this->getReminderLogPath();
+        file_put_contents($path, json_encode($data));
     }
 
     public function create()
@@ -436,10 +472,14 @@ class ProductController
 
     public function prosesRequest($id)
     {
-        $stmt = $this->koneksi->prepare("UPDATE products SET request_count = 1 WHERE id = ?");
-        $stmt->bind_param("i", $id);
+        if (empty($id) || !is_numeric($id)) {
+            echo "ID tidak valid.";
+            return;
+        }
 
-        if ($stmt->execute()) {
+        $success = $this->model->incrementRequestCount($id);
+
+        if ($success) {
             echo "<script>alert('Request Berhasil Diproses!'); window.location='index.php';</script>";
         } else {
             echo "Gagal memproses data.";

@@ -104,13 +104,31 @@ function renderUI($type, $data = null)
             <h2><?= $title ?></h2>
             <p><?= $message ?></p>
             <div class="d-flex flex-column gap-2">
-                <a href="http://10.87.203.183/license_aplikasi/views/auth/login.php" class="btn-pastel">Back To Login</a>
+                <a href="#" onclick="return backToLogin();" class="btn-pastel">Back To Login</a>
                 <a href="javascript:void(0)" onclick="window.close();" class="btn-pastel btn-outline">Close Window</a>
             </div>
         </div>
-    </body>
 
-    </html>
+    <script>
+        function backToLogin() {
+            const loginUrl = "http://10.87.203.183/license_aplikasi/public/logout.php";
+            if (window.opener && !window.opener.closed) {
+                try {
+                    window.opener.location.href = loginUrl;
+                } catch (error) {
+                    // ignore cross-origin issues
+                }
+                window.close();
+                return false;
+            }
+
+            window.location.href = loginUrl;
+            return false;
+        }
+    </script>
+</body>
+
+</html>
 <?php
 }
 

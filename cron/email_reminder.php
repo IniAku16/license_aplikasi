@@ -83,7 +83,7 @@ while ($data = $query->fetch_assoc()) {
             </span>
         </td>
         <td style='padding: 15px 10px; text-align: center;'>
-            <a href='http://10.87.203.183/license_aplikasi/public/index.php?action=proses-request&id={$data['id']}'
+                <a href='http://10.87.203.183/license_aplikasi/cron/request.php?id={$data['id']}'
                style='background: $primary_pastel; color: #ffffff !important; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-size: 11px; font-weight: 700; display: inline-block;'>
                REQUEST
             </a>
