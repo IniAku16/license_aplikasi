@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Registrasi</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -173,8 +173,8 @@
 
 <body>
     <div class="custom-card text-center">
-        <h2>Join With Us</h2>
-        <p class="subtitle">Create your account to get started</p>
+        <h2>Bergabung Bersama Kami</h2>
+        <p class="subtitle">Buat Akun Sebelum Login</p>
         
         <?php if (isset($_GET['error'])): ?>
             <div class="alert alert-custom d-flex align-items-center justify-content-center">
@@ -186,12 +186,12 @@
         <form method="POST" action="index.php?action=register-process" class="text-start">
             <div class="mb-3">
                 <label class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" placeholder="Create a username" required>
+                <input type="text" name="username" class="form-control" placeholder="Membuat Username" required>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Email Address</label>
-                <input type="email" name="email" class="form-control" placeholder="name@example.com" required>
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" placeholder="nama@gmail.com" required>
             </div>
 
             <div class="mb-4">
@@ -203,14 +203,14 @@
             </div>
 
             <button type="submit" class="btn btn-custom">
-                Register Now <i class="bi bi-arrow-right-short ms-1"></i>
+                Daftar Sekarang <i class="bi bi-arrow-right-short ms-1"></i>
             </button>
         </form>
 
         <div class="footer-section">
             <p class="footer-text">
-                Already have an account?
-                <a href="index.php?action=show-login" class="link-pastel">Login here</a>
+               Sudah Punya Akun?
+                <a href="index.php?action=show-login" class="link-pastel">Masuk</a>
             </p>
         </div>
     </div>

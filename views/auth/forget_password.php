@@ -159,7 +159,7 @@
 <body>
     <div class="custom-card text-center">
         <h2>Reset Password</h2>
-        <p class="subtitle">Enter your details to set a new password</p>
+        <p class="subtitle">Masukkan Password Kamu Yang Baru</p>
 
         <?php if (isset($_GET['error'])): ?>
             <div class="alert alert-custom d-flex align-items-center justify-content-center">
@@ -176,7 +176,7 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">New Password</label>
+                <label class="form-label">Password baru</label>
                 <div class="password-wrapper">
                     <input type="password" name="new_password" id="pass1" class="form-control form-control-password" placeholder="••••••••" required>
                     <i class="bi bi-eye-slash toggle-password" onclick="togglePass('pass1', this)"></i>
@@ -184,7 +184,7 @@
             </div>
 
             <div class="mb-4">
-                <label class="form-label">Confirm Password</label>
+                <label class="form-label">Konfirmasi</label>
                 <div class="password-wrapper">
                     <input type="password" name="confirm_password" id="pass2" class="form-control form-control-password" placeholder="••••••••" required>
                     <i class="bi bi-eye-slash toggle-password" onclick="togglePass('pass2', this)"></i>
@@ -192,13 +192,13 @@
             </div>
 
             <button type="submit" class="btn btn-custom">
-                Update Password <i class="bi bi-arrow-right-short ms-1"></i>
+                Perbarui <i class="bi bi-arrow-right-short ms-1"></i>
             </button>
 
         </form>
 
         <p class="footer-text">
-            Remembered? <a href="index.php?action=show-login" class="link-pastel">Back to Login</a>
+            Sudah Ingat? <a href="index.php?action=show-login" class="link-pastel">Kembali ke Login</a>
         </p>
     </div>
 

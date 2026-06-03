@@ -185,8 +185,8 @@
 <body>
 
     <div class="login-card text-center">
-        <h2>Welcome Back</h2>
-        <p class="subtitle">Please enter your details to sign in</p>
+        <h2>Selamat Datang</h2>
+        <p class="subtitle">Silakan masukkan detail Anda untuk masuk</p>
 
         <?php if (isset($_GET['error'])): ?>
             <div class="alert alert-custom d-flex align-items-center justify-content-center">
@@ -206,7 +206,7 @@
             
             <div class="mb-3">
                 <label class="form-label">Username / Email</label>
-                <input type="text" name="login" class="form-control" placeholder="Enter username or email" required autocomplete="username">
+                <input type="text" name="login" class="form-control" placeholder="Masukkan username atau email" required autocomplete="username">
             </div>
 
             <div class="mb-4">
@@ -218,18 +218,18 @@
             </div>
 
             <button type="submit" class="btn btn-login">
-                Sign In <i class="bi bi-arrow-right-short ms-1"></i>
+                masuk <i class="bi bi-arrow-right-short ms-1"></i>
             </button>
 
         </form>
 
         <div class="footer-section">
             <p class="footer-text">
-                Don't have an account? 
-                <a href="index.php?action=show-register" class="link-pastel">Create Account</a>
+                Belum Punya Akun? 
+                <a href="index.php?action=show-register" class="link-pastel">Buat Akun</a>
             </p>
             <p class="footer-text mt-2">
-                <a href="index.php?action=show-forget"  class="link-pastel">Forgot Password?</a>
+                <a href="index.php?action=show-forget"  class="link-pastel">Lupa Password?</a>
             </p>
         </div>
     </div>

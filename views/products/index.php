@@ -510,7 +510,6 @@ $activePage = 'products';
             const start = (currentState.page - 1) * currentState.rowsPerPage;
             const paginated = filteredRows.slice(start, start + currentState.rowsPerPage);
 
-            // Update statistik berdasarkan filtered rows
             let activeCount = 0, expiringCount = 0, expiredCount = 0;
             filteredRows.forEach(row => {
                 const statusCell = row.cells[8];
@@ -520,7 +519,6 @@ $activePage = 'products';
                 else if (statusText.includes('expired')) expiredCount++;
             });
             
-            // Update statistik di halaman
             document.querySelectorAll('.stat-card')[0].querySelector('h3').innerText = total;
             document.querySelectorAll('.stat-card')[1].querySelector('h3').innerText = activeCount;
             document.querySelectorAll('.stat-card')[2].querySelector('h3').innerText = expiringCount;
@@ -565,9 +563,12 @@ $activePage = 'products';
             });
         });
 
-        document.querySelectorAll('.btn-update').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const d = this.dataset;
+        function handleTableClick(event) {
+            const btn = event.target.closest('.btn-update, .done-btn, .view-foto-btn');
+            if (!btn) return;
+
+            if (btn.classList.contains('btn-update')) {
+                const d = btn.dataset;
                 document.getElementById('edit_product_id').value = d.id;
                 document.getElementById('edit_application_name').value = d.application;
                 document.getElementById('edit_agreement_number').value = d.agreement;
@@ -577,8 +578,27 @@ $activePage = 'products';
                 document.getElementById('edit_order_date').value = d.expired;
                 document.getElementById('edit_harga_order').value = d.harga;
                 new bootstrap.Modal('#editProductModal').show();
-            });
-        });
+                return;
+            }
+
+            if (btn.classList.contains('done-btn')) {
+                document.getElementById('payment_product_id').value = btn.dataset.id;
+                new bootstrap.Modal('#paymentModal').show();
+                return;
+            }
+
+            if (btn.classList.contains('view-foto-btn')) {
+                const src = btn.getAttribute('data-img');
+                const img = document.getElementById('imgPreview');
+                img.src = src;
+                img.classList.remove('zoomed');
+                document.getElementById('downloadBtn').href = src;
+                new bootstrap.Modal('#photoModal').show();
+                return;
+            }
+        }
+
+        tableBody.addEventListener('click', handleTableClick);
 
         document.getElementById('editProductForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -587,13 +607,6 @@ $activePage = 'products';
             .then(res => res.json()).then(data => {
                 alert(data.message);
                 if(data.status === 'success') location.reload();
-            });
-        });
-
-        document.querySelectorAll('.done-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('payment_product_id').value = this.dataset.id;
-                new bootstrap.Modal('#paymentModal').show();
             });
         });
 
@@ -609,17 +622,6 @@ $activePage = 'products';
             .then(res => res.json()).then(data => {
                 if(data.status === 'success') location.reload();
                 else alert(data.message);
-            });
-        });
-
-        document.querySelectorAll('.view-foto-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const src = this.getAttribute('data-img');
-                const img = document.getElementById('imgPreview');
-                img.src = src;
-                img.classList.remove('zoomed');
-                document.getElementById('downloadBtn').href = src;
-                new bootstrap.Modal('#photoModal').show();
             });
         });
 
