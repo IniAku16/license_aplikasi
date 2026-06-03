@@ -8,9 +8,10 @@ $activePage = 'products';
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>License Dashboard</title>
+    <title>Lisensi Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
     <style>
@@ -29,48 +30,32 @@ $activePage = 'products';
             overflow-x: hidden;
         }
 
-        .main-wrapper {
-            display: flex;
-            width: 100%;
-        }
-
         #content {
             flex: 1;
             margin-left: 280px;
-            padding: 30px;
+            padding: 25px;
             transition: var(--transition);
         }
 
         #content.expanded {
             margin-left: 85px;
-            width: calc(100% - 85px);
         }
 
         .card-custom {
             background: #ffffff;
-            border-radius: 24px;
+            border-radius: 20px;
             border: none;
-            padding: 25px;
+            padding: 20px;
             box-shadow: var(--card-shadow);
-            margin-bottom: 25px;
-        }
-
-        .header-greeting h2 {
-            font-weight: 700;
-            color: #2d3436;
-        }
-
-        .header-greeting span {
-            color: var(--primary-pastel);
         }
 
         .btn-pastel {
             background-color: var(--primary-pastel);
             color: white;
-            border: none;
-            border-radius: 14px;
-            padding: 10px 20px;
+            border-radius: 12px;
+            padding: 8px 18px;
             font-weight: 600;
+            border: none;
             transition: var(--transition);
         }
 
@@ -78,768 +63,563 @@ $activePage = 'products';
             background-color: var(--primary-light);
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(93, 85, 203, 0.3);
         }
 
         .stat-card {
             border: none;
-            border-radius: 20px;
+            border-radius: 18px;
             padding: 20px;
             background: white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02);
-            transition: var(--transition);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--card-shadow);
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            height: 100%;
         }
 
         .table-container {
-            border-radius: 18px;
-            overflow: hidden;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
         }
 
-        .table thead {
-            background-color: #f8f9ff;
+        .table {
+            font-size: 0.85rem; 
+            vertical-align: middle;
         }
 
         .table thead th {
+            background-color: #f8f9ff;
+            color: #636e72;
             font-weight: 600;
-            color: #7f8c8d;
             text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            padding: 12px 8px;
             border: none;
-            padding: 15px;
         }
 
-        .table tbody td {
-            padding: 15px;
-            vertical-align: middle;
-            border-bottom: 1px solid #f1f2f6;
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
         #toggle-btn {
             background: white;
             border: none;
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
             color: var(--primary-pastel);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-            margin-right: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .form-control,
-        .form-select {
-            border-radius: 12px;
-            border: 2px solid #edeff2;
-            padding: 12px 16px;
-            font-size: 0.9rem;
-            transition: var(--transition);
+        .filter-area {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        .form-control:focus {
-            border-color: var(--primary-pastel);
-            box-shadow: 0 0 0 4px rgba(93, 85, 203, 0.1);
+        @media (max-width: 1200px) {
+            #content { margin-left: 0 !important; width: 100% !important; }
+            .table-responsive { border: 0; }
         }
 
-        .alert-custom {
-            border-radius: 16px;
-            border: none;
-            font-weight: 500;
-        }
-
-        @media (max-width: 992px) {
-            #content {
-                margin-left: 0;
-            }
-
-            #content.expanded {
-                margin-left: 0;
-            }
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        #mainTable {
-            min-width: 1200px;
-        }
-
-#photoModal .modal-content {
-    background-color: #ffffff;
-    border: none;
-    border-radius: 24px;
-    color: #2d3436;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-}
-
-.img-container {
-    overflow: auto; 
-    padding: 20px;
-    max-height: 75vh; 
-    text-align: center; 
-    background: #f8f9fa; 
-}
-
-#imgPreview {
-    max-width: 100%;
-    height: auto;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: zoom-in;
-    border-radius: 8px;
-    display: inline-block;
-    transform-origin: top center; 
-    margin-top: 10px;
-}
-
-#imgPreview.zoomed {
-    transform: scale(2); 
-    cursor: zoom-out;
-    margin-bottom: 50px;
-}
-
-#photoModal .modal-header {
-    border-bottom: 1px solid #eee;
-    padding: 15px 25px;
-    background: white;
-    z-index: 10;
-}
+        .img-container { overflow: auto; text-align: center; background: #f1f2f6; padding: 20px; }
+        #imgPreview { max-width: 100%; border-radius: 10px; cursor: zoom-in; transition: transform 0.3s; }
+        #imgPreview.zoomed { transform: scale(1.8); cursor: zoom-out; }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="main-wrapper">
+    <div class="container-fluid p-0">
+        <div class="d-flex">
             <?php require_once __DIR__ . '/../layouts/sidebar.php'; ?>
 
             <main id="content">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <div class="d-flex align-items-center header-greeting">
-                        <button id="toggle-btn">
+                    <div class="d-flex align-items-center">
+                        <button id="toggle-btn" class="me-3">
                             <i class="bi bi-list"></i>
                         </button>
-                        <h2 class="m-0">Heyow Welcome, <span><?= htmlspecialchars($_SESSION['username']) ?></span></h2>
+                        <h4 class="fw-bold m-0">Halo, <span class="text-primary"><?= htmlspecialchars($_SESSION['username']) ?></span></h4>
                     </div>
-                    <div>
-                        <button class="btn btn-pastel" data-bs-toggle="modal" data-bs-target="#createProductModal">
-                            <i class="bi bi-plus-lg me-2"></i> Add License
-                        </button>
-                    </div>
+                    <button class="btn btn-pastel" data-bs-toggle="modal" data-bs-target="#createProductModal">
+                        <i class="bi bi-plus-lg me-2"></i> Tambah Lisensi
+                    </button>
                 </div>
 
                 <?php if (!empty($expiringProducts)) : ?>
-                    <div class="alert alert-warning alert-custom shadow-sm mb-4 border-0" style="background: #fff9eb; border-left: 5px solid #f39c12 !important; border-radius: 15px;">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="bi bi-exclamation-triangle-fill me-2" style="color: #f39c12; font-size: 1.2rem;"></i>
-                            <strong style="color: #856404;">Perhatian: Ada Lisensi Mendekati Expired!</strong>
+                    <div class="alert alert-warning border-0 shadow-sm mb-4" style="border-radius: 15px;">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+                            <div>
+                                <strong class="d-block">Lisensi Mendekati Expired!</strong>
+                                <div class="mt-1">
+                                    <?php foreach (array_slice($expiringProducts, 0, 5) as $prod) : ?>
+                                        <span class="badge bg-dark bg-opacity-10 text-dark me-1"><?= htmlspecialchars($prod['username']) ?></span>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="d-flex flex-wrap gap-2 mt-2">
-                            <?php
-                            $limit = 5;
-                            $count = 0;
-                            foreach ($expiringProducts as $product) :
-                                if ($count < $limit) :
-                            ?>
-                                    <span class="badge rounded-pill bg-warning text-dark px-3 py-2" style="font-weight: 500; font-size: 0.75rem; border: 1px solid #e1ad01;">
-                                        <i class="bi bi-app-indicator me-1"></i>
-                                        <?= htmlspecialchars($product['username']) ?>
-                                        <small class='ms-1 opacity-75'>(<?= htmlspecialchars($product['agreement_number']) ?>)</small>
-                                    </span>
-                            <?php
-                                else:
-                                    $sisa = count($expiringProducts) - $limit;
-                                    echo "<span class='badge rounded-pill bg-secondary bg-opacity-10 text-secondary px-3 py-2'>+$sisa lainnya...</span>";
-                                    break;
-                                endif;
-                                $count++;
-                            endforeach;
-                            ?>
-                        </div>
-                        <hr style="border-top: 1px solid rgba(133, 100, 4, 0.1);">
-                        <small class="text-muted">Segera lakukan pembayaran untuk diperpanjang</small>
                     </div>
                 <?php endif; ?>
 
-                <div class="row g-4 mb-4">
-                    <div class="col-md-3">
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
                         <div class="stat-card">
-                            <div class="stat-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-collection-fill"></i></div>
-                            <p class="text-muted small mb-1 fw-bold">TOTAL LICENSE</p>
+                            <small class="text-muted fw-bold">TOTAL</small>
                             <h3 class="fw-bold m-0"><?= $totalProducts ?></h3>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-6 col-md-3">
                         <div class="stat-card">
-                            <div class="stat-icon bg-success bg-opacity-10 text-success"><i class="bi bi-check-circle-fill"></i></div>
-                            <p class="text-muted small mb-1 fw-bold">ACTIVE</p>
+                            <small class="text-success fw-bold">AKTIF</small>
                             <h3 class="fw-bold m-0 text-success"><?= $activeCount ?></h3>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-6 col-md-3">
                         <div class="stat-card">
-                            <div class="stat-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-hourglass-split"></i></div>
-                            <p class="text-muted small mb-1 fw-bold">EXPIRING SOON</p>
+                            <small class="text-warning fw-bold">SEGERA BERAKHIR</small>
                             <h3 class="fw-bold m-0 text-warning"><?= $expiringCount ?></h3>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-6 col-md-3">
                         <div class="stat-card">
-                            <div class="stat-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-x-octagon-fill"></i></div>
-                            <p class="text-muted small mb-1 fw-bold">EXPIRED</p>
+                            <small class="text-danger fw-bold">EXPIRED</small>
                             <h3 class="fw-bold m-0 text-danger"><?= $expiredCount ?></h3>
                         </div>
                     </div>
                 </div>
 
-                <div class="card-custom">
-                    <div class="row g-3 mb-4 align-items-end">
+                <div class="filter-area shadow-sm">
+                    <div class="row g-2 mb-3">
                         <div class="col-md-3">
-                            <label class="small fw-bold text-muted mb-1">Cari Data</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                                <input type="text" id="searchProduct" class="form-control border-start-0" placeholder="Search product or user...">
-                            </div>
+                            <input type="text" id="searchProduct" class="form-control" placeholder="Cari aplikasi/user...">
                         </div>
                         <div class="col-md-2">
-                            <label class="small fw-bold text-muted mb-1">Filter Data</label>
                             <select id="filterExpired" class="form-select">
-                                <option value="">Semua Data</option>
-
-                                <optgroup label="Berdasarkan Waktu">
-                                    <option value="week">Expired Minggu Ini</option>
-                                    <option value="month">Expired Bulan Ini</option>
-                                </optgroup>
-
-                                <optgroup label="Berdasarkan Aplikasi">
-                                    <?php if (!empty($appStats)) : ?>
-                                        <?php foreach (array_keys($appStats) as $appName) : ?>
-                                            <option value="app:<?= htmlspecialchars($appName) ?>"><?= htmlspecialchars($appName) ?></option>
-                                        <?php endforeach; ?>
+                                <option value="">Semua Status</option>
+                                <option value="week">Minggu Ini</option>
+                                <option value="month">Bulan Ini</option>
+                                <?php foreach (array_keys($appStats) as $appName) : ?>
+                                    <?php if ($appName !== 'Lainnya') : ?>
+                                        <option value="app:<?= htmlspecialchars($appName) ?>"><?= htmlspecialchars($appName) ?></option>
                                     <?php endif; ?>
-                                </optgroup>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label class="small fw-bold text-muted mb-1">Tampilkan</label>
                             <select id="rowsPerPage" class="form-select">
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="25" selected>25</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
+                                <option value="5">Tampilkan 5</option>
+                                <option value="10">Tampilkan 10</option>
+                                <option value="25">Tampilkan 25</option>
+                                <option value="50">Tampilkan 50</option>
                             </select>
                         </div>
-                        <div class="col-md-5">
-                            <label class="small fw-bold text-muted mb-1">Export Excel (Range Tanggal)</label>
-                            <form action="/license_aplikasi/public/index.php" method="GET" class="d-flex gap-2">
+                        <div class="col-md-5 text-end">
+                            <form action="/license_aplikasi/public/index.php" method="GET" class="d-flex gap-1 justify-content-end">
                                 <input type="hidden" name="action" value="exportExcel">
-                                <input type="date" name="start_date" class="form-control">
-                                <input type="date" name="end_date" class="form-control">
-                                <button type="submit" class="btn btn-outline-success border-2 fw-bold">
-                                    <i class="bi bi-file-earmark-excel"></i>
-                                </button>
+                                <input type="date" name="start_date" class="form-control form-control-sm" style="width: 130px;">
+                                <input type="date" name="end_date" class="form-control form-control-sm" style="width: 130px;">
+                                <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-file-earmark-excel"></i></button>
                             </form>
                         </div>
                     </div>
 
                     <div class="table-responsive table-container">
-                        <table class="table table-hover align-middle m-0" id="mainTable">
+                        <table class="table table-hover" id="mainTable">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Application Name</th>
-                                    <th>Agreement Number</th>
-                                    <th>User / Dept</th>
-                                    <th>Expired Date</th>
-                                    <th>Sisa Hari</th>
-                                    <th>Last Quotation</th>
+                                    <th>Aplikasi</th>
+                                    <th>No. Agreement</th>
+                                    <th>User & Dept</th>
+                                    <th>Expired</th>
+                                    <th>Sisa</th>
+                                    <th>Harga</th>
                                     <th>Foto</th>
                                     <th>Status</th>
-                                    <th class="text-center">Action</th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (!empty($products)) : $no = 1;
-                                    foreach ($products as $product) : ?>
-                                        <?php
-                                        $statusColor = "success";
-                                        if ($product['status'] == "expired") $statusColor = "danger";
-                                        elseif ($product['status'] == "expiring") $statusColor = "warning";
-                                        ?>
-                                        <tr data-app="<?= htmlspecialchars($product['application_name']) ?>">
-                                            <td class="text-muted small row-number"><?= $no++ ?></td>
-                                            <td>
-                                                <div class="fw-bold text-dark"><?= htmlspecialchars($product['application_name']) ?></div>
-                                            </td>
-                                            <td>
-                                                <div class="fw-bold text-dark"><?= htmlspecialchars($product['agreement_number']) ?></div>
-                                            </td>
-                                            <td>
-                                                <div class="fw-semibold"><?= htmlspecialchars($product['username']) ?></div>
-                                                <small class="badge bg-secondary bg-opacity-10 text-secondary"><?= htmlspecialchars($product['departemen']) ?></small>
-                                                <small class="badge bg-secondary bg-opacity-10 text-secondary"><?= htmlspecialchars($product['email_name']) ?></small>
-                                            </td>
-                                            <td class="small text-muted"><?= $product['order_date'] ?></td>
-                                            <td>
-                                                <?php if ($product['sisa_hari'] < 0) : ?>
-                                                    <span class="text-danger fw-bold"><i class="bi bi-arrow-down-circle me-1"></i><?= abs($product['sisa_hari']) ?> Hari</span>
-                                                <?php else : ?>
-                                                    <span class="text-primary fw-bold"><?= $product['sisa_hari'] ?> Hari</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="fw-bold text-dark">Rp <?= number_format($product['harga_order'], 0, ',', '.') ?></td>
-                                            <td>
-                                                <?php if (!empty($product['foto'])): ?>
-                                                    <button type="button" class="btn btn-sm btn-outline-primary view-foto-btn"
-                                                        data-img="/license_aplikasi/public/uploads/<?= $product['foto'] ?>">
-                                                        <i class="bi bi-image"></i> View
-                                                    </button>
-                                                <?php else: ?>
-                                                    <span class="text-muted small">No Image</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-<?= $statusColor ?> px-3 py-2 rounded-pill">
-                                                    <?= ucfirst($product['status']) ?>
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                <div class="btn-group shadow-sm">
-                                                    <button class="btn btn-white btn-sm btn-update"
-                                                        data-id="<?= $product['id'] ?>"
-                                                        data-application="<?= htmlspecialchars($product['application_name']) ?>"
-                                                        data-agreement="<?= htmlspecialchars($product['agreement_number']) ?>"
-                                                        data-name="<?= htmlspecialchars($product['username']) ?>"
-                                                        data-departemen="<?= htmlspecialchars($product['departemen']) ?>"
-                                                        data-email="<?= htmlspecialchars($product['email_name']) ?>"
-                                                        data-expired="<?= $product['order_date'] ?>"
-                                                        data-harga="<?= $product['harga_order'] ?>"
-                                                        data-foto="<?= $product['foto'] ?>">
-                                                        <i class="bi bi-pencil-fill text-warning"></i>
-                                                    </button>
-                                                    <button class="btn btn-white btn-sm done-btn" data-id="<?= $product['id'] ?>">
-                                                        <i class="bi bi-wallet2 text-success"></i>
-                                                    </button>
-                                                    <a href="/license_aplikasi/public/index.php?action=delete&id=<?= $product['id'] ?>"
-                                                        class="btn btn-white btn-sm" onclick="return confirm('Yakin Anda Ingin Menghapus Data Ini?');">
-                                                        <i class="bi bi-trash3-fill text-danger"></i>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach;
-                                else : ?>
-                                    <tr id="noData">
-                                        <td colspan="9" class="text-center py-5 text-muted">No data available</td>
+                                <?php if (!empty($products)) : $no = 1; foreach ($products as $product) : 
+                                    $statusColor = ($product['status'] == "expired") ? "danger" : (($product['status'] == "segera") ? "warning" : "success");
+                                ?>
+                                    <tr data-app="<?= htmlspecialchars($product['application_name']) ?>">
+                                        <td class="text-muted small"><?= $no++ ?></td>
+                                        <td class="fw-bold"><?= htmlspecialchars($product['application_name']) ?></td>
+                                        <td class="small"><?= htmlspecialchars($product['agreement_number']) ?></td>
+                                        <td>
+                                            <div class="fw-semibold"><?= htmlspecialchars($product['username']) ?></div>
+                                            <small class="text-muted"><?= htmlspecialchars($product['departemen']) ?></small>
+                                        </td>
+                                        <td class="small"><?= $product['order_date'] ?></td>
+                                        <td class="fw-bold <?= $product['sisa_hari'] < 0 ? 'text-danger' : 'text-primary' ?>">
+                                            <?= $product['sisa_hari'] ?> H
+                                        </td>
+                                        <td class="fw-bold">Rp<?= number_format($product['harga_order'], 0, ',', '.') ?></td>
+                                        <td>
+                                            <?php if (!empty($product['foto'])): ?>
+                                                <button class="btn btn-sm btn-light border view-foto-btn" data-img="/license_aplikasi/public/uploads/<?= $product['foto'] ?>">
+                                                    <i class="bi bi-image"></i>
+                                                </button>
+                                            <?php else: ?>
+                                                <span class="text-muted" style="font-size: 10px;">N/A</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><span class="badge badge-status bg-<?= $statusColor ?>"><?= ucfirst($product['status']) ?></span></td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <button class="btn btn-sm btn-update" 
+                                                    data-id="<?= $product['id'] ?>"
+                                                    data-application="<?= htmlspecialchars($product['application_name']) ?>"
+                                                    data-agreement="<?= htmlspecialchars($product['agreement_number']) ?>"
+                                                    data-name="<?= htmlspecialchars($product['username']) ?>"
+                                                    data-departemen="<?= htmlspecialchars($product['departemen']) ?>"
+                                                    data-email="<?= htmlspecialchars($product['email_name']) ?>"
+                                                    data-expired="<?= $product['order_date'] ?>"
+                                                    data-harga="<?= $product['harga_order'] ?>">
+                                                    <i class="bi bi-pencil-square text-warning"></i>
+                                                </button>
+                                                <button class="btn btn-sm done-btn" data-id="<?= $product['id'] ?>"><i class="bi bi-wallet2 text-success"></i></button>
+                                                <a href="/license_aplikasi/public/index.php?action=delete&id=<?= $product['id'] ?>" class="btn btn-sm" onclick="return confirm('Hapus?')"><i class="bi bi-trash text-danger"></i></a>
+                                            </div>
+                                        </td>
                                     </tr>
+                                <?php endforeach; else : ?>
+                                    <tr><td colspan="10" class="text-center py-5">Belum ada data</td></tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center mt-4 px-2">
-                        <div class="text-muted small" id="tableInfo">
-                            Showing 0 to 0 of 0 entries
-                        </div>
-                        <nav>
-                            <ul class="pagination pagination-sm mb-0" id="paginationWrapper">
-                            </ul>
-                        </nav>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted small" id="tableInfo"></div>
+                        <nav><ul class="pagination pagination-sm mb-0" id="paginationWrapper"></ul></nav>
                     </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <div class="modal fade" id="createProductModal" tabindex="-1" aria-labelledby="createProductModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createProductModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content card-custom">
-                <form id="productForm" enctype="multipart/form-data">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="createProductModalLabel">Add New License</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Application Name</label>
-                                <input type="text" class="form-control" name="application_name" placeholder="Enter application name" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Agreement Number</label>
-                                <input type="text" class="form-control" name="agreement_number" placeholder="Enter agreement number" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">User</label>
-                                <input type="text" class="form-control" name="username" placeholder="Enter user name" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Departemen</label>
-                                <input type="text" class="form-control" name="departemen" placeholder="Enter department" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="text" class="form-control" name="email_name" placeholder="Enter email">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Expired Date</label>
-                                <input type="date" class="form-control" name="order_date" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Last Quotation</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control" name="harga_order" placeholder="0">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Foto Nota</label>
-                                <input type="file" class="form-control" name="foto" accept="image/*" onchange="previewImage(event)">
-                                <img id="preview" class="mt-2" style="max-width:100%; display:none;" />
-                            </div>
-
+                <form id="productForm">
+                    <div class="modal-header border-0"><h5 class="fw-bold">Tambah Lisensi Baru</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                    <div class="modal-body row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Application Name</label>
+                            <input type="text" class="form-control" name="application_name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Agreement Number</label>
+                            <input type="text" class="form-control" name="agreement_number" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">User</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Departemen</label>
+                            <select class="form-select select-search" name="departemen" id="add_departemen" required>
+                                <option value="">Pilih...</option>
+                                <?php foreach ($branches as $branch) : ?>
+                                    <option value="<?= htmlspecialchars($branch['nama_branch']) ?>"><?= htmlspecialchars($branch['nama_branch']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Email</label>
+                            <input type="text" class="form-control" name="email_name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Expired Date</label>
+                            <input type="date" class="form-control" name="order_date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Last Quotation (Rp)</label>
+                            <input type="number" class="form-control" name="harga_order">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Foto Lisensi</label>
+                            <input type="file" class="form-control" name="foto" accept="image/*">
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save Data</button>
+                    <div class="modal-footer border-0">
+                        <button type="submit" class="btn btn-primary px-4">Simpan Data</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editProductModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content card-custom">
-                <form id="editProductForm" enctype="multipart/form-data">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editProductModalLabel">Update License</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" name="id" id="edit_product_id">
-
-                        <div class="row">
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Application Name</label>
-                                <input type="text" class="form-control" id="edit_application_name" name="application_name" placeholder="Enter application name" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Agreement Number</label>
-                                <input type="text" class="form-control" id="edit_agreement_number" name="agreement_number" placeholder="Enter agreement number" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">User</label>
-                                <input type="text" class="form-control" id="edit_username" name="username" placeholder="Enter user name" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Departemen</label>
-                                <input type="text" class="form-control" id="edit_departemen" name="departemen" placeholder="Enter department" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Email</label>
-                                <input type="text" class="form-control" id="edit_email" name="email_name" placeholder="Enter email">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Expired Date</label>
-                                <input type="date" class="form-control" id="edit_order_date" name="order_date" required>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Last Quotation</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="number" class="form-control" id="edit_harga_order" name="harga_order" placeholder="0">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Update Foto</label>
-                                <input type="file" class="form-control" id="edit_foto" name="foto" accept="image/*" onchange="previewEditImage(event)">
-
-                                <small class="text-muted d-block mt-1">
-                                    Kosongkan jika tidak ingin mengubah foto
-                                </small>
-                            </div>
-
+                <form id="editProductForm">
+                    <input type="hidden" name="id" id="edit_product_id">
+                    <div class="modal-header border-0"><h5 class="fw-bold">Perbarui Lisensi</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                    <div class="modal-body row g-3">
+                        <div class="col-md-6"><label class="small fw-bold">Application Name</label><input type="text" class="form-control" id="edit_application_name" name="application_name" required></div>
+                        <div class="col-md-6"><label class="small fw-bold">Agreement Number</label><input type="text" class="form-control" id="edit_agreement_number" name="agreement_number" required></div>
+                        <div class="col-md-6"><label class="small fw-bold">User</label><input type="text" class="form-control" id="edit_username" name="username" required></div>
+                        <div class="col-md-6">
+                            <label class="small fw-bold">Departemen</label>
+                            <select class="form-select select-search" name="departemen" id="edit_departemen" required>
+                                <option value="">Pilih...</option>
+                                <?php foreach ($branches as $branch) : ?>
+                                    <option value="<?= htmlspecialchars($branch['nama_branch']) ?>"><?= htmlspecialchars($branch['nama_branch']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
+                        <div class="col-md-6"><label class="small fw-bold">Email</label><input type="text" class="form-control" id="edit_email" name="email_name"></div>
+                        <div class="col-md-6"><label class="small fw-bold">Expired Date</label><input type="date" class="form-control" id="edit_order_date" name="order_date" required></div>
+                        <div class="col-md-6"><label class="small fw-bold">Harga</label><input type="number" class="form-control" id="edit_harga_order" name="harga_order"></div>
+                        <div class="col-md-6"><label class="small fw-bold">Update Foto</label><input type="file" class="form-control" name="foto" accept="image/*"></div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Update Data</button>
-                    </div>
-
+                    <div class="modal-footer border-0"><button type="submit" class="btn btn-primary px-4">Update Data</button></div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-md">
+    <div class="modal fade" id="paymentModal" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content card-custom">
                 <form id="paymentForm">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Konfirmasi Payment</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+                    <div class="modal-header border-0"><h6 class="fw-bold">Konfirmasi Pembayaran</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                     <div class="modal-body">
-                        <input type="hidden" id="payment_product_id" />
-
-                        <div class="mb-3">
-                            <label for="payment_date" class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" id="payment_date" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="payment_amount" class="form-label">Total Pembayaran</label>
-                            <input type="number" class="form-control" id="payment_amount" name="amount" placeholder="Contoh: 15000000" required />
-                        </div>
+                        <input type="hidden" id="payment_product_id">
+                        <div class="mb-2"><label class="small">Tanggal</label><input type="date" class="form-control form-control-sm" id="payment_date" required></div>
+                        <div class="mb-2"><label class="small">Nominal</label><input type="number" class="form-control form-control-sm" id="payment_amount" placeholder="Contoh: 1500000" required></div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save Payment</button>
-                    </div>
-
+                    <div class="modal-footer border-0"><button type="submit" class="btn btn-success btn-sm w-100">Simpan</button></div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="photoModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark"><i class="bi bi-image me-2"></i>Preview Foto Nota</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal fade" id="photoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-transparent border-0 text-center">
+                <div class="img-container rounded shadow-lg bg-white">
+                    <img src="" id="imgPreview" alt="Foto Lisensi">
                 </div>
-                <div class="modal-body p-0">
-                    <div class="img-container">
-                        <img src="" id="imgPreview" alt="Preview">
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between bg-light">
-                    <p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i>Klik gambar untuk Zoom In/Out</p>
-                    <a href="" id="downloadBtn" download class="btn btn-primary btn-sm">
-                        <i class="bi bi-download me-2"></i>Download Image
-                    </a>
+                <div class="mt-3">
+                    <a href="" id="downloadBtn" download class="btn btn-light btn-sm px-3"><i class="bi bi-download me-2"></i>Download</a>
+                    <button type="button" class="btn btn-danger btn-sm px-3 ms-2" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 
     <script>
-        document.getElementById('productForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
+        const STATE_KEY = 'license_dashboard_state';
+        let currentState = JSON.parse(localStorage.getItem(STATE_KEY)) || {
+            search: '',
+            filter: '',
+            rowsPerPage: 25,
+            page: 1
+        };
 
-            fetch('/license_aplikasi/public/index.php?action=create', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert(data.message);
-                        this.reset();
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('createProductModal'));
-                        modal.hide();
-                        location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan!');
-                });
+        function saveState() { localStorage.setItem(STATE_KEY, JSON.stringify(currentState)); }
+        document.getElementById('searchProduct').value = currentState.search;
+        document.getElementById('filterExpired').value = currentState.filter;
+        document.getElementById('rowsPerPage').value = currentState.rowsPerPage;
+
+        let tsAdd, tsEdit;
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+        const tableBody = document.querySelector('#mainTable tbody');
+        const originalRows = Array.from(tableBody.querySelectorAll('tr'));
+
+        document.addEventListener("DOMContentLoaded", function() {
+            tsAdd = new TomSelect('#add_departemen', { placeholder: "Cari dept..." });
+            tsEdit = new TomSelect('#edit_departemen', { placeholder: "Cari dept..." });
+
+            if (localStorage.getItem('sidebarStatus') === 'collapsed') {
+                sidebar.classList.add('collapsed');
+                content.classList.add('expanded');
+            }
+            updateTable();
         });
 
-        document.querySelectorAll('.btn-update').forEach(button => {
-            button.addEventListener('click', function() {
-                document.getElementById('edit_product_id').value = this.dataset.id;
-                document.getElementById('edit_application_name').value = this.dataset.application;
-                document.getElementById('edit_agreement_number').value = this.dataset.agreement;
-                document.getElementById('edit_username').value = this.dataset.name;
-                document.getElementById('edit_departemen').value = this.dataset.departemen;
-                document.getElementById('edit_email').value = this.dataset.email;
-                document.getElementById('edit_order_date').value = this.dataset.expired;
-                document.getElementById('edit_harga_order').value = this.dataset.harga;
-                document.getElementById('edit_foto').value = "";
+        document.getElementById('toggle-btn').addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            content.classList.toggle('expanded');
+            localStorage.setItem('sidebarStatus', sidebar.classList.contains('collapsed') ? 'collapsed' : 'open');
+        });
 
-                const editModal = new bootstrap.Modal(document.getElementById('editProductModal'));
-                editModal.show();
+        document.getElementById('searchProduct').addEventListener('input', (e) => {
+            currentState.search = e.target.value.toLowerCase();
+            currentState.page = 1;
+            saveState();
+            updateTable();
+        });
+
+        document.getElementById('filterExpired').addEventListener('change', (e) => {
+            currentState.filter = e.target.value;
+            currentState.page = 1;
+            saveState();
+            updateTable();
+        });
+
+        document.getElementById('rowsPerPage').addEventListener('change', (e) => {
+            currentState.rowsPerPage = parseInt(e.target.value);
+            currentState.page = 1;
+            saveState();
+            updateTable();
+        });
+
+        function updateTable() {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            let filteredRows = originalRows.filter(row => {
+                const text = row.innerText.toLowerCase();
+                const appName = row.getAttribute('data-app');
+                const expStr = row.cells[4].innerText;
+                const expDate = new Date(expStr);
+
+                let matchSearch = text.includes(currentState.search);
+                let matchFilter = true;
+
+                if (currentState.filter !== "") {
+                    if (currentState.filter.startsWith('app:')) {
+                        matchFilter = (appName === currentState.filter.replace('app:', ''));
+                    } else {
+                        const diff = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+                        if (currentState.filter === 'week') matchFilter = (diff >= 0 && diff <= 7);
+                        if (currentState.filter === 'month') matchFilter = (diff >= 0 && diff <= 30);
+                    }
+                }
+                return matchSearch && matchFilter;
+            });
+
+            const total = filteredRows.length;
+            const pages = Math.ceil(total / currentState.rowsPerPage);
+            if (currentState.page > pages) currentState.page = 1;
+
+            const start = (currentState.page - 1) * currentState.rowsPerPage;
+            const paginated = filteredRows.slice(start, start + currentState.rowsPerPage);
+
+            // Update statistik berdasarkan filtered rows
+            let activeCount = 0, expiringCount = 0, expiredCount = 0;
+            filteredRows.forEach(row => {
+                const statusCell = row.cells[8];
+                const statusText = statusCell.innerText.toLowerCase();
+                if (statusText.includes('aktif')) activeCount++;
+                else if (statusText.includes('segera')) expiringCount++;
+                else if (statusText.includes('expired')) expiredCount++;
+            });
+            
+            // Update statistik di halaman
+            document.querySelectorAll('.stat-card')[0].querySelector('h3').innerText = total;
+            document.querySelectorAll('.stat-card')[1].querySelector('h3').innerText = activeCount;
+            document.querySelectorAll('.stat-card')[2].querySelector('h3').innerText = expiringCount;
+            document.querySelectorAll('.stat-card')[3].querySelector('h3').innerText = expiredCount;
+
+            tableBody.innerHTML = '';
+            if (paginated.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="10" class="text-center py-4">Data tidak ditemukan</td></tr>';
+            } else {
+                let no = start + 1;
+                paginated.forEach(row => {
+                    const rowClone = row.cloneNode(true);
+                    rowClone.cells[0].innerText = no++;
+                    tableBody.appendChild(rowClone);
+                });
+            }
+
+            renderPagination(pages);
+            document.getElementById('tableInfo').innerText = `Menampilkan ${total === 0 ? 0 : start+1}-${Math.min(start + currentState.rowsPerPage, total)} dari ${total} lisensi`;
+        }
+
+        function renderPagination(total) {
+            const wrapper = document.getElementById('paginationWrapper');
+            wrapper.innerHTML = '';
+            if (total <= 1) return;
+
+            for (let i = 1; i <= total; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentState.page ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.onclick = (e) => { e.preventDefault(); currentState.page = i; saveState(); updateTable(); };
+                wrapper.appendChild(li);
+            }
+        }
+
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('/license_aplikasi/public/index.php?action=create', { method: 'POST', body: new FormData(this) })
+            .then(res => res.json()).then(data => {
+                alert(data.message);
+                if(data.status === 'success') location.reload();
+            });
+        });
+
+        document.querySelectorAll('.btn-update').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const d = this.dataset;
+                document.getElementById('edit_product_id').value = d.id;
+                document.getElementById('edit_application_name').value = d.application;
+                document.getElementById('edit_agreement_number').value = d.agreement;
+                document.getElementById('edit_username').value = d.name;
+                tsEdit.setValue(d.departemen);
+                document.getElementById('edit_email').value = d.email;
+                document.getElementById('edit_order_date').value = d.expired;
+                document.getElementById('edit_harga_order').value = d.harga;
+                new bootstrap.Modal('#editProductModal').show();
             });
         });
 
         document.getElementById('editProductForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
             const id = document.getElementById('edit_product_id').value;
-
-            fetch('/license_aplikasi/public/index.php?action=update&id=' + id, {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert(data.message);
-                        this.reset();
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
-                        modal.hide();
-                        location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan!');
-                });
-        });
-
-        const toggleBtn = document.getElementById('toggle-btn');
-        const sidebar = document.getElementById('sidebar');
-        const content = document.getElementById('content');
-
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-            content.classList.toggle('expanded');
-
-            const isCollapsed = sidebar.classList.contains('collapsed');
-            localStorage.setItem('sidebarStatus', isCollapsed ? 'collapsed' : 'open');
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('sidebarStatus') === 'collapsed') {
-                sidebar.classList.add('collapsed');
-                content.classList.add('expanded');
-            }
-        });
-
-        window.addEventListener('storage', function(event) {
-            if (event.key === 'license_app_logout') {
-                window.location.href = '/license_aplikasi/public/index.php?action=show-login';
-            }
-        });
-
-        const searchInput = document.getElementById('searchProduct');
-        const filterSelect = document.getElementById('filterExpired');
-        const tableRows = document.querySelectorAll('table tbody tr');
-
-        function filterTable() {
-            const searchText = searchInput.value.toLowerCase();
-            const filterValue = filterSelect.value;
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            tableRows.forEach(row => {
-                const textContent = row.innerText.toLowerCase();
-                const orderDateStr = row.cells[4].innerText;
-                const expiredDate = new Date(orderDateStr);
-
-                let matchesSearch = textContent.includes(searchText);
-                let matchesFilter = true;
-
-                if (filterValue !== "") {
-                    const diffTime = expiredDate - today;
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    if (filterValue === 'week' && (diffDays < 0 || diffDays > 7)) matchesFilter = false;
-                    if (filterValue === 'month' && (diffDays < 0 || diffDays > 30)) matchesFilter = false;
-                }
-                row.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+            fetch('/license_aplikasi/public/index.php?action=update&id=' + id, { method: 'POST', body: new FormData(this) })
+            .then(res => res.json()).then(data => {
+                alert(data.message);
+                if(data.status === 'success') location.reload();
             });
-        }
-
-        searchInput.addEventListener('input', filterTable);
-        filterSelect.addEventListener('change', filterTable);
+        });
 
         document.querySelectorAll('.done-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                const id = this.dataset.id;
-                document.getElementById('payment_product_id').value = id;
-
-                const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
-                modal.show();
+                document.getElementById('payment_product_id').value = this.dataset.id;
+                new bootstrap.Modal('#paymentModal').show();
             });
         });
 
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
             const id = document.getElementById('payment_product_id').value;
-            const date = document.getElementById('payment_date').value;
-            const amount = document.getElementById('payment_amount').value;
+            const fd = new FormData();
+            fd.append('payment_status', 'done');
+            fd.append('payment_date', document.getElementById('payment_date').value);
+            fd.append('amount', document.getElementById('payment_amount').value);
 
-            const formData = new FormData();
-            formData.append('payment_status', 'done');
-            formData.append('payment_date', date);
-            formData.append('amount', amount);
-
-            fetch('/license_aplikasi/public/index.php?action=update&id=' + id, {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert("Payment Success!");
-                    } else {
-                        alert("Payment Failed: " + data.message);
-                    }
-                    location.reload();
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('Terjadi kesalahan!');
-                });
+            fetch('/license_aplikasi/public/index.php?action=update&id=' + id, { method: 'POST', body: fd })
+            .then(res => res.json()).then(data => {
+                if(data.status === 'success') location.reload();
+                else alert(data.message);
+            });
         });
 
-        document.querySelectorAll('.view-foto-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const imgSrc = this.getAttribute('data-img');
-                const imgElement = document.getElementById('imgPreview');
-                const downloadBtn = document.getElementById('downloadBtn');
-
-                imgElement.classList.remove('zoomed');
-
-                imgElement.src = imgSrc;
-                downloadBtn.href = imgSrc;
-
-                const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
-                photoModal.show();
+        document.querySelectorAll('.view-foto-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const src = this.getAttribute('data-img');
+                const img = document.getElementById('imgPreview');
+                img.src = src;
+                img.classList.remove('zoomed');
+                document.getElementById('downloadBtn').href = src;
+                new bootstrap.Modal('#photoModal').show();
             });
         });
 
@@ -847,144 +627,6 @@ $activePage = 'products';
             this.classList.toggle('zoomed');
         });
 
-        document.getElementById('photoModal').addEventListener('hidden.bs.modal', function() {
-            document.getElementById('imgPreview').classList.remove('zoomed');
-        });
-
-        let currentPage = 1;
-        let rowsPerPage = 25;
-        const tableBody = document.querySelector('table tbody');
-        const originalRows = Array.from(tableBody.querySelectorAll('tr'));
-        const rowsPerPageSelect = document.getElementById('rowsPerPage');
-        const paginationWrapper = document.getElementById('paginationWrapper');
-        const tableInfo = document.getElementById('tableInfo');
-
-        function updateTable() {
-            const searchText = document.getElementById('searchProduct').value.toLowerCase();
-            const filterValue = document.getElementById('filterExpired').value;
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            let filteredRows = originalRows.filter(row => {
-                if (row.classList.contains('group-header')) return false;
-                if (row.cells.length < 2) return false;
-
-                const textContent = row.innerText.toLowerCase();
-                const orderDateStr = row.cells[4].innerText;
-                const expiredDate = new Date(orderDateStr);
-                const rowApp = row.getAttribute('data-app');
-
-                let matchesSearch = textContent.includes(searchText);
-                let matchesFilter = true;
-
-                if (filterValue !== "") {
-                    if (filterValue.startsWith('app:')) {
-                        const targetApp = filterValue.replace('app:', '');
-                        if (rowApp !== targetApp) matchesFilter = false;
-                    } else {
-                        const diffTime = expiredDate - today;
-                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                        if (filterValue === 'week' && (diffDays < 0 || diffDays > 7)) matchesFilter = false;
-                        if (filterValue === 'month' && (diffDays < 0 || diffDays > 30)) matchesFilter = false;
-                    }
-                }
-                return matchesSearch && matchesFilter;
-            });
-
-            const totalRows = filteredRows.length;
-            const totalPages = Math.ceil(totalRows / rowsPerPage);
-
-            if (currentPage > totalPages) currentPage = 1;
-            if (currentPage < 1) currentPage = 1;
-
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + parseInt(rowsPerPage);
-            const paginatedRows = filteredRows.slice(start, end);
-
-            tableBody.innerHTML = '';
-            if (paginatedRows.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-4">No matching records found</td></tr>';
-            } else {
-                paginatedRows.forEach(row => tableBody.appendChild(row));
-            }
-
-
-            renderPagination(totalPages);
-            tableInfo.innerText = `Showing ${totalRows === 0 ? 0 : start + 1} to ${Math.min(end, totalRows)} of ${totalRows} entries`;
-        }
-
-        function renderPagination(totalPages) {
-            paginationWrapper.innerHTML = '';
-
-            const prevLi = document.createElement('li');
-            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-            prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)">Previous</a>`;
-            prevLi.onclick = () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    updateTable();
-                }
-            };
-            paginationWrapper.appendChild(prevLi);
-
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                    const li = document.createElement('li');
-                    li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-                    li.innerHTML = `<a class="page-link" href="javascript:void(0)">${i}</a>`;
-                    li.onclick = () => {
-                        currentPage = i;
-                        updateTable();
-                    };
-                    paginationWrapper.appendChild(li);
-                } else if (i === currentPage - 2 || i === currentPage + 2) {
-                    const li = document.createElement('li');
-                    li.className = `page-item disabled`;
-                    li.innerHTML = `<a class="page-link" href="#">...</a>`;
-                    paginationWrapper.appendChild(li);
-                }
-            }
-
-
-            const nextLi = document.createElement('li');
-            nextLi.className = `page-item ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''}`;
-            nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)">Next</a>`;
-            nextLi.onclick = () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    updateTable();
-                }
-            };
-            paginationWrapper.appendChild(nextLi);
-        }
-
-        rowsPerPageSelect.addEventListener('change', function() {
-            rowsPerPage = parseInt(this.value);
-            currentPage = 1;
-            updateTable();
-        });
-
-        document.getElementById('searchProduct').addEventListener('input', () => {
-            currentPage = 1;
-            updateTable();
-        });
-
-        document.getElementById('filterExpired').addEventListener('change', () => {
-            currentPage = 1;
-            updateTable();
-        });
-
-
-        document.addEventListener('DOMContentLoaded', updateTable);
-
-        (function() {
-            window.onpageshow = function(event) {
-                if (event.persisted) {
-                    window.location.reload();
-                }
-            };
-        });
     </script>
 </body>
-
-</html> 
+</html>

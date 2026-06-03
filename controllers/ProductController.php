@@ -58,7 +58,7 @@ class ProductController
                     $color  = "danger";
                     $expiredCount++;
                 } elseif ($diff <= 30) {
-                    $status = "expiring";
+                    $status = "segera";
                     $color  = "warning";
                     $expiringCount++;
 
@@ -66,7 +66,7 @@ class ProductController
                         $milestoneProducts[] = $row['id'] . '|' . $diff;
                     }
                 } else {
-                    $status = "active";
+                    $status = "aktif";
                     $color  = "success";
                     $activeCount++;
                 }
@@ -107,6 +107,11 @@ class ProductController
         if (!$skipEmail && !empty($milestoneProducts)) {
             $this->attemptEmailTrigger($milestoneProducts);
         }
+        $branchResult = $this->model->getBranches();
+        $branches = [];
+        while ($b = mysqli_fetch_assoc($branchResult)) {
+            $branches[] = $b;
+        }
 
         include __DIR__ . "/../views/products/index.php";
     }
@@ -121,7 +126,6 @@ class ProductController
         $lastFingerprint = $reminderLog['fingerprint'] ?? '';
         $lastSentDate = $reminderLog['date'] ?? '';
 
-        // Jika sudah terkirim hari ini untuk set item yang sama, jangan kirim ulang.
         if ($currentFingerprint === $lastFingerprint && $lastSentDate === $today) {
             return;
         }
@@ -420,10 +424,10 @@ class ProductController
                 $status_label = "Expired";
                 $hari_label = abs($selisih_hari) . " Hari Lalu";
             } elseif ($selisih_hari <= 7) {
-                $status_label = "Expiring";
+                $status_label = "Segera";
                 $hari_label = $selisih_hari . " Hari Lagi";
             } else {
-                $status_label = "Active";
+                $status_label = "Aktif";
                 $hari_label = $selisih_hari . " Hari";
             }
 

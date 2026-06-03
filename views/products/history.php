@@ -176,7 +176,7 @@ $activePage = 'history';
                         <button id="toggle-btn">
                             <i class="bi bi-list"></i>
                         </button>
-                        <h2 class="m-0">Payment <span>History</span></h2>
+                        <h2 class="m-0">Riwayat <span>Pembayaran</span></h2>
                     </div>
                     <div>
                         <a href="/license_aplikasi/public/index.php?action=history-pdf" target="_blank" class="btn btn-danger rounded-pill px-4">
@@ -201,7 +201,7 @@ $activePage = 'history';
                             <label class="small fw-bold text-muted mb-1">Cari Riwayat</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                                <input type="text" id="searchHistory" class="form-control border-start-0" placeholder="Search user, agreement, or dept...">
+                                <input type="text" id="searchHistory" class="form-control border-start-0" placeholder="pencarian...">
                             </div>
                         </div>
                     </div>

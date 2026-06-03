@@ -123,4 +123,11 @@ class ProductModel
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+
+    public function getBranches()
+    {
+        $sql = "SELECT * FROM tb_branch ORDER BY nama_branch ASC";
+        $result = mysqli_query($this->db, $sql);
+        return $result;
+    }
 }

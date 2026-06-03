@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Riwayat License Aplikasi</title>
+    <title>Riwayat Lisensi Aplikasi</title>
     <style>
         @page {
             margin: 50px 40px;
@@ -177,8 +177,8 @@
         <table width="100%">
             <tr>
                 <td style="vertical-align: bottom;">
-                    <h1 class="title">Payment <span>History</span></h1>
-                    <div class="subtitle">E-License Official Document</div>
+                    <h1 class="title">Riwayat <span>Pembayaran</span></h1>
+                    <div class="subtitle">Dokumen Resmi Lisensi</div>
                 </td>
                 <td align="right" style="vertical-align: bottom;">
                     <div class="doc-number">#<?= htmlspecialchars($product['agreement_number']) ?></div>
@@ -191,7 +191,7 @@
     <div class="card-info">
         <table class="info-table">
             <tr>
-                <td class="label">User / Holder</td>
+                <td class="label">User </td>
                 <td class="value">: <?= htmlspecialchars($product['username']) ?></td>
                 <td class="label">Department</td>
                 <td class="value">: <?= htmlspecialchars($product['departemen']) ?></td>
@@ -234,7 +234,7 @@
                 <?php endforeach; ?>
 
                 <tr class="total-row">
-                    <td colspan="2" class="total-label">TOTAL PAID</td>
+                    <td colspan="2" class="total-label">TOTAL</td>
                     <td class="total-value">Rp <?= number_format($total, 0, ',', '.') ?></td>
                 </tr>
             <?php else : ?>
@@ -249,7 +249,7 @@
 
     <div class="footer">
         <p>Dokumen ini dihasilkan oleh sistem secara otomatis dan bersifat sah.<br>
-            © <?= date('Y') ?> License Management System - <?= htmlspecialchars($product['departemen']) ?></p>
+            © <?= date('Y') ?> Lisensi Sistem - <?= htmlspecialchars($product['departemen']) ?></p>
     </div>
 
 </body>

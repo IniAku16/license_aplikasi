@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Riwayat License Keseluruhan</title>
+    <title>Laporan Riwayat Lisensi Keseluruhan</title>
     <style>
         @page {
             margin: 60px 40px;
@@ -167,7 +167,7 @@
 <body>
 
     <div class="main-header">
-        <h1>Payment <span>Summary Report</span></h1>
+        <h1>Bukti <span>Pembayaran</span></h1>
         <p>Seluruh Riwayat Lisensi Aplikasi</p>
     </div>
 
@@ -190,7 +190,7 @@
                             <td width="25%">
                                 <div class="info-label">Departemen</div>
                                 <div class="info-value" style="margin-bottom: 5px;"><?= htmlspecialchars($item['departemen'] ?? '-') ?></div>
-                                <div class="info-value"><span class="badge-total"><?= htmlspecialchars($item['total_transaksi'] ?? 0) ?>x Pembayaran</span></div>
+                                <div class="info-value"><span class="badge-total"><?= htmlspecialchars($item['total_transaksi'] ?? 0) ?>Pembayaran</span></div>
                             </td>
                             <td width="30%" align="right">
                                 <div class="info-label">Akumulasi Biaya</div>
