@@ -11,10 +11,11 @@ if ($mysqli->connect_error) {
     die("Koneksi gagal: " . $mysqli->connect_error);
 }
 
-$today = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
-$today->setTime(0, 0, 0);
+$query = $mysqli->query("SELECT id, username, application_name, email_name, order_date, departemen, agreement_number 
+                         FROM products 
+                         WHERE request_count = 0 
+                         AND DATEDIFF(order_date, CURDATE()) IN (30, 15, 7, 3, 2, 1, 0, -1, -2, -3)");
 
-$query = $mysqli->query("SELECT id, username, application_name, email_name, order_date, departemen, agreement_number FROM products WHERE request_count = 0 AND DATEDIFF(order_date, CURDATE()) <= 30");
 $rows = "";
 $kirim_email = false;
 $no = 1;
@@ -22,23 +23,22 @@ $no = 1;
 $primary_pastel = "#5d55cb";
 $bg_color = "#eaebf3";
 
+$today = new DateTime('now', new DateTimeZone('Asia/Jakarta'));
+$today->setTime(0, 0, 0);
+
 while ($data = $query->fetch_assoc()) {
     $nama = htmlspecialchars($data['username']);
     $app_name = htmlspecialchars($data['application_name']);
     $email_user = htmlspecialchars($data['email_name']);
     $agreement = htmlspecialchars($data['agreement_number']);
     $departemen = htmlspecialchars($data['departemen']);
+    
     $exp = new DateTime($data['order_date'], new DateTimeZone('Asia/Jakarta'));
-
     $orderDate = clone $exp;
     $orderDate->modify('-1 year');
 
     $interval = $today->diff($exp);
     $selisih_hari = (int)$interval->format("%r%a");
-
-    if ($selisih_hari > 30) {
-        continue;
-    }
 
     if ($selisih_hari < 0) {
         $status_label = "Expired";
@@ -213,3 +213,4 @@ if ($kirim_email) {
 } else {
     echo "Tidak ada produk expiring (≤ 30 hari)";
 }
+$mysqli->close();
