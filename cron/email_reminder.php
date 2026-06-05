@@ -46,18 +46,12 @@ while ($data = $query->fetch_assoc()) {
         $badge_text = "#ffffff";
         $hari_style = "color: #e02424; font-weight: 700;";
         $hari_label = abs($selisih_hari) . " Hari Lalu";
-    } elseif ($selisih_hari <= 7) {
-        $status_label = "Expiring";
+    } else {
+        $status_label = "Segera";
         $badge_bg = "#f59e0b";
         $badge_text = "#ffffff";
         $hari_style = "color: #d97706; font-weight: 700;";
         $hari_label = $selisih_hari . " Hari Lagi";
-    } else {
-        $status_label = "Active";
-        $badge_bg = "#10b981";
-        $badge_text = "#ffffff";
-        $hari_style = "color: #5d55cb; font-weight: 700;";
-        $hari_label = $selisih_hari . " Hari";
     }
 
     $bg_row = ($no % 2 == 0) ? "#ffffff" : "#fbfbfe";
@@ -213,4 +207,3 @@ if ($kirim_email) {
 } else {
     echo "Tidak ada produk expiring (≤ 30 hari)";
 }
-$mysqli->close();

@@ -75,19 +75,21 @@ $exp = new DateTime($data['order_date'], new DateTimeZone('Asia/Jakarta'));
 $orderDate = clone $exp;
 $orderDate->modify('-1 year');
 
-$img_base64 = "";
+$html_foto = "";
 if (!empty($data['foto'])) {
     $filePath = __DIR__ . '/../public/uploads/' . $data['foto'];
     if (file_exists($filePath)) {
         $imgData = base64_encode(file_get_contents($filePath));
-        $img_base64 = "
+        $mimeType = mime_content_type($filePath) ?: 'image/jpeg';
+        $html_foto = "
         <div style='margin-top: 25px; border-top: 1px solid #f1f2f6; padding-top: 20px;'>
-            <p style='font-size: 13px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px;'>PREVIEW NOTA:</p>
-            <img src='data:image/jpeg;base64,{$imgData}' style='max-width: 100%; border-radius: 12px; border: 1px solid #ddd;'>
+            <p style='font-size: 13px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px;'>PREVIEW LISENSI:</p>
+            <div style='text-align: center; background: #fafafa; padding: 10px; border-radius: 12px; border: 1px solid #ededed;'>
+                <img src='data:{$mimeType};base64,{$imgData}' style='max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);'>
+            </div>
         </div>";
     }
 }
-
 
 require_once __DIR__ . '/../vendor/phpmailer/src/PHPMailer.php';
 require_once __DIR__ . '/../vendor/phpmailer/src/SMTP.php';
@@ -106,21 +108,6 @@ $mail->setFrom("itlicenseaplikasi@hexindo-tbk.co.id", "IT License System");
 $mail->addAddress("ara.rhzz16@gmail.com");
 $mail->addAddress("denipratama@hexindo-tbk.co.id");
 
-$html_foto = "";
-if (!empty($data['foto'])) {
-    $filePath = __DIR__ . '/../public/uploads/' . $data['foto'];
-    if (file_exists($filePath)) {
-        $mail->addEmbeddedImage($filePath, 'nota_preview');
-        $html_foto = "
-        <div style='margin-top: 25px; border-top: 1px solid #f1f2f6; padding-top: 20px;'>
-            <p style='font-size: 13px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px;'>PREVIEW NOTA / BUKTI:</p>
-            <div style='text-align: center; background: #fafafa; padding: 10px; border-radius: 12px; border: 1px solid #ededed;'>
-                <img src='cid:nota_preview' style='max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);'>
-            </div>
-        </div>";
-    }
-}
-
 $mail->isHTML(true);
 $mail->Subject = "Request Penawaran: " . $data['application_name'] . " - " . $data['username'];
 $mail->Body = "
@@ -135,7 +122,7 @@ $mail->Body = "
                     </tr>
                     <tr>
                         <td style='padding: 40px;'>
-                            <p style='font-size: 15px; color: #2d3436;'>Dear <b>Procurement Team</b>,</p>
+                            <p style='font-size: 15px; color: #2d3436;'>Dear <b>Mas Fauzi / Mbak Nurhesty</b>,</p>
                             <p style='font-size: 14px; color: #636e72; line-height: 1.6;'>Mohon bantuan untuk dikirimkan penawaran lisensi aplikasi dengan detail sebagai berikut:</p>
                             
                             <table width='100%' style='margin-top: 20px; border-collapse: collapse; border: 1px solid #f1f2f6;'>
