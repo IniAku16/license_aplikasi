@@ -98,6 +98,36 @@
             z-index: 10;
         }
 
+        .password-rules {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .password-rule {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: #6c757d;
+            font-size: 0.92rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .password-rule .rule-icon {
+            font-size: 1rem;
+            color: #6c757d;
+            transition: color 0.2s ease;
+        }
+
+        .password-rule.valid {
+            color: #198754;
+        }
+
+        .password-rule.valid .rule-icon {
+            color: #198754;
+        }
+
         input::-ms-reveal, input::-webkit-password-reveal {
             display: none !important;
         }
@@ -178,9 +208,16 @@
             <div class="mb-3">
                 <label class="form-label">Password baru</label>
                 <div class="password-wrapper">
-                    <input type="password" name="new_password" id="pass1" class="form-control form-control-password" placeholder="••••••••" required>
+                    <input type="password" name="new_password" id="pass1" class="form-control form-control-password" placeholder="••••••••" required minlength="8" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}" title="Minimal 8 karakter, termasuk huruf besar, huruf kecil, dan simbol; angka juga diperbolehkan">
                     <i class="bi bi-eye-slash toggle-password" onclick="togglePass('pass1', this)"></i>
                 </div>
+                <div class="form-text">Password harus memenuhi semua persyaratan berikut. Angka juga diperbolehkan.</div>
+                <ul class="password-rules">
+                    <li id="rule-length" class="password-rule"><i class="bi bi-circle-fill rule-icon"></i>Minimal 8 karakter</li>
+                    <li id="rule-upper" class="password-rule"><i class="bi bi-circle-fill rule-icon"></i>Memiliki huruf besar (A-Z)</li>
+                    <li id="rule-lower" class="password-rule"><i class="bi bi-circle-fill rule-icon"></i>Memiliki huruf kecil (a-z)</li>
+                    <li id="rule-symbol" class="password-rule"><i class="bi bi-circle-fill rule-icon"></i>Memiliki simbol (termasuk _ dan !@#$%^&* dll)</li>
+                </ul>
             </div>
 
             <div class="mb-4">
@@ -203,6 +240,28 @@
     </div>
 
     <script>
+        const newPasswordInput = document.getElementById('pass1');
+        const passwordRules = [
+            { element: document.getElementById('rule-length'), test: value => value.length >= 8 },
+            { element: document.getElementById('rule-upper'), test: value => /[A-Z]/.test(value) },
+            { element: document.getElementById('rule-lower'), test: value => /[a-z]/.test(value) },
+            { element: document.getElementById('rule-symbol'), test: value => /[^A-Za-z0-9]/.test(value) },
+        ];
+
+        function updatePasswordRules() {
+            const value = newPasswordInput.value || '';
+            passwordRules.forEach(rule => {
+                if (rule.test(value)) {
+                    rule.element.classList.add('valid');
+                } else {
+                    rule.element.classList.remove('valid');
+                }
+            });
+        }
+
+        newPasswordInput.addEventListener('input', updatePasswordRules);
+        updatePasswordRules();
+
         function togglePass(inputId, icon) {
             const input = document.getElementById(inputId);
             if (input.type === "password") {

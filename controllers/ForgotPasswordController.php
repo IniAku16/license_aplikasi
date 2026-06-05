@@ -22,6 +22,11 @@ class ForgotPasswordController {
                 exit();
             }
 
+            if (!$this->isValidPassword($newPassword)) {
+                header("Location: index.php?action=show-forget&error=Password harus minimal 8 karakter dan mengandung huruf besar, huruf kecil, serta simbol");
+                exit();
+            }
+
             $userModel = new UserModel($this->koneksi);
             if ($userModel->updatePassword($identifier, $newPassword)) {
                 header("Location: index.php?action=show-login&success=Password berhasil diupdate");
@@ -30,5 +35,12 @@ class ForgotPasswordController {
             }
             exit();
         }
+    }
+
+    private function isValidPassword($password) {
+        return strlen($password) >= 8
+            && preg_match('/[A-Z]/', $password)
+            && preg_match('/[a-z]/', $password)
+            && preg_match('/[^A-Za-z0-9]/', $password);
     }
 }

@@ -15,9 +15,22 @@ class RegisterController {
         $user = new UserModel($this->koneksi);
 
         if ($_SERVER['REQUEST_METHOD'] == "POST") {
-            $user->username = $_POST['username'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+
+            if (!$this->isValidUsername($username)) {
+                header("Location: index.php?action=show-register&error=Username hanya boleh berisi huruf, tanpa spasi, simbol, atau angka");
+                exit();
+            }
+
+            if (!$this->isValidPassword($password)) {
+                header("Location: index.php?action=show-register&error=Password harus minimal 8 karakter dan mengandung huruf besar, huruf kecil, serta simbol");
+                exit();
+            }
+
+            $user->username = $username;
             $user->email = $_POST['email'];
-            $user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+            $user->password = password_hash($password, PASSWORD_DEFAULT);
 
             if ($user->register()) {
                 header("Location: index.php?action=show-login&success=Registrasi Berhasil");
@@ -27,5 +40,16 @@ class RegisterController {
                 exit();
             }
         }
+    }
+
+    private function isValidPassword($password) {
+        return strlen($password) >= 8
+            && preg_match('/[A-Z]/', $password)
+            && preg_match('/[a-z]/', $password)
+            && preg_match('/[^A-Za-z0-9]/', $password);
+    }
+
+    private function isValidUsername($username) {
+        return preg_match('/^[A-Za-z]+$/', $username);
     }
 }
