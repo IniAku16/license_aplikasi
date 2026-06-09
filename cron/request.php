@@ -25,6 +25,7 @@ function renderUI($type, $data = null)
 ?>
     <!DOCTYPE html>
     <html lang="id">
+
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -32,15 +33,63 @@ function renderUI($type, $data = null)
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         <style>
-            body { background-color: <?= $bg_color ?>; font-family: 'Poppins', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
-            .card-custom { background: #ffffff; border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; max-width: 450px; width: 90%; }
-            .icon-box { font-size: 4rem; color: <?= $icon_color ?>; margin-bottom: 20px; }
-            h2 { font-weight: 700; color: #2d3436; margin-bottom: 10px; }
-            p { color: #636e72; line-height: 1.6; margin-bottom: 30px; }
-            .btn-pastel { background-color: <?= $primary_pastel ?>; color: white; border: none; border-radius: 12px; padding: 12px 25px; font-weight: 600; text-decoration: none; display: inline-block; transition: 0.3s; }
-            .btn-pastel:hover { opacity: 0.9; transform: translateY(-2px); }
+            body {
+                background-color: <?= $bg_color ?>;
+                font-family: 'Poppins', sans-serif;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0;
+            }
+
+            .card-custom {
+                background: #ffffff;
+                border-radius: 24px;
+                padding: 40px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+                text-align: center;
+                max-width: 450px;
+                width: 90%;
+            }
+
+            .icon-box {
+                font-size: 4rem;
+                color: <?= $icon_color ?>;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                font-weight: 700;
+                color: #2d3436;
+                margin-bottom: 10px;
+            }
+
+            p {
+                color: #636e72;
+                line-height: 1.6;
+                margin-bottom: 30px;
+            }
+
+            .btn-pastel {
+                background-color: <?= $primary_pastel ?>;
+                color: white;
+                border: none;
+                border-radius: 12px;
+                padding: 12px 25px;
+                font-weight: 600;
+                text-decoration: none;
+                display: inline-block;
+                transition: 0.3s;
+            }
+
+            .btn-pastel:hover {
+                opacity: 0.9;
+                transform: translateY(-2px);
+            }
         </style>
     </head>
+
     <body>
         <div class="card-custom">
             <div class="icon-box"><i class="bi <?= $icon ?>"></i></div>
@@ -49,6 +98,7 @@ function renderUI($type, $data = null)
             <a href="javascript:void(0)" onclick="window.close();" class="btn-pastel">Close Window</a>
         </div>
     </body>
+
     </html>
 <?php
 }
@@ -64,7 +114,9 @@ $stmt->execute();
 $result = $stmt->get_result();
 $data = $result->fetch_assoc();
 
-if (!$data) { die("Produk tidak ditemukan."); }
+if (!$data) {
+    die("Produk tidak ditemukan.");
+}
 
 if ($data['request_count'] > 0) {
     renderUI('info', $data);
@@ -75,20 +127,19 @@ $exp = new DateTime($data['order_date'], new DateTimeZone('Asia/Jakarta'));
 $orderDate = clone $exp;
 $orderDate->modify('-1 year');
 
-$html_foto = "";
-if (!empty($data['foto'])) {
-    $filePath = __DIR__ . '/../public/uploads/' . $data['foto'];
-    if (file_exists($filePath)) {
-        $imgData = base64_encode(file_get_contents($filePath));
-        $mimeType = mime_content_type($filePath) ?: 'image/jpeg';
-        $html_foto = "
-        <div style='margin-top: 25px; border-top: 1px solid #f1f2f6; padding-top: 20px;'>
-            <p style='font-size: 13px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px;'>PREVIEW LISENSI:</p>
-            <div style='text-align: center; background: #fafafa; padding: 10px; border-radius: 12px; border: 1px solid #ededed;'>
-                <img src='data:{$mimeType};base64,{$imgData}' style='max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);'>
-            </div>
-        </div>";
-    }
+$filePath = realpath(__DIR__ . '/../public/uploads/' . $data['foto']);
+$has_image = false;
+$cid_name = "license_img_" . $id;
+
+if ($filePath && file_exists($filePath) && is_file($filePath)) {
+    $has_image = true;
+} else {
+}
+$has_image = false;
+$cid_name = "license_img_" . $id;
+
+if (!empty($data['foto']) && file_exists($filePath)) {
+    $has_image = true;
 }
 
 require_once __DIR__ . '/../vendor/phpmailer/src/PHPMailer.php';
@@ -108,8 +159,25 @@ $mail->setFrom("itlicenseaplikasi@hexindo-tbk.co.id", "IT License System");
 $mail->addAddress("ara.rhzz16@gmail.com");
 $mail->addAddress("denipratama@hexindo-tbk.co.id");
 
+if ($has_image) {
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime_type = $finfo->file($filePath);
+    $mail->addEmbeddedImage($filePath, $cid_name, $data['foto'], 'base64', $mime_type);
+}
+
 $mail->isHTML(true);
 $mail->Subject = "Request Penawaran: " . $data['application_name'] . " - " . $data['username'];
+$html_foto_body = "";
+if ($has_image) {
+    $html_foto_body = "
+    <div style='margin-top: 25px; border-top: 1px solid #f1f2f6; padding-top: 20px;'>
+        <p style='font-size: 13px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px;'>PREVIEW LISENSI:</p>
+        <div style='text-align: center; background: #fafafa; padding: 10px; border-radius: 12px; border: 1px solid #ededed;'>
+            <img src='cid:$cid_name' style='max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);'>
+            <p style='font-size: 11px; color: #95a5a6; margin-top: 10px;'>Lihat lampiran email untuk mengunduh file asli.</p>
+        </div>
+    </div>";
+}
 $mail->Body = "
 <html>
 <body style='margin:0; padding:0; background-color: #f3f4f9; font-family: \"Segoe UI\", Helvetica, Arial, sans-serif;'>
@@ -153,7 +221,7 @@ $mail->Body = "
                                 </tr>
                             </table>
 
-                            $html_foto
+                            $html_foto_body
 
                             <p style='margin-top: 30px; font-size: 13px; color: #95a5a6;'>Atas perhatiannya diucapkan terima kasih.</p>
                         </td>
