@@ -81,7 +81,7 @@ $activePage = 'products';
         }
 
         .table {
-            font-size: 0.85rem; 
+            font-size: 0.85rem;
             vertical-align: middle;
         }
 
@@ -118,17 +118,38 @@ $activePage = 'products';
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 20px;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         @media (max-width: 1200px) {
-            #content { margin-left: 0 !important; width: 100% !important; }
-            .table-responsive { border: 0; }
+            #content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+
+            .table-responsive {
+                border: 0;
+            }
         }
 
-        .img-container { overflow: auto; text-align: center; background: #f1f2f6; padding: 20px; }
-        #imgPreview { max-width: 100%; border-radius: 10px; cursor: zoom-in; transition: transform 0.3s; }
-        #imgPreview.zoomed { transform: scale(1.8); cursor: zoom-out; }
+        .img-container {
+            overflow: auto;
+            text-align: center;
+            background: #f1f2f6;
+            padding: 20px;
+        }
+
+        #imgPreview {
+            max-width: 100%;
+            border-radius: 10px;
+            cursor: zoom-in;
+            transition: transform 0.3s;
+        }
+
+        #imgPreview.zoomed {
+            transform: scale(1.8);
+            cursor: zoom-out;
+        }
     </style>
 </head>
 
@@ -245,52 +266,61 @@ $activePage = 'products';
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (!empty($products)) : $no = 1; foreach ($products as $product) : 
-                                    $statusColor = ($product['status'] == "expired") ? "danger" : (($product['status'] == "segera") ? "warning" : "success");
+                                <?php if (!empty($products)) : $no = 1;
+                                    foreach ($products as $product) :
+                                        $statusColor = ($product['status'] == "expired") ? "danger" : (($product['status'] == "segera") ? "warning" : "success");
                                 ?>
-                                    <tr data-app="<?= htmlspecialchars($product['application_name']) ?>">
-                                        <td class="text-muted small"><?= $no++ ?></td>
-                                        <td class="fw-bold"><?= htmlspecialchars($product['application_name']) ?></td>
-                                        <td class="small"><?= htmlspecialchars($product['agreement_number']) ?></td>
-                                        <td>
-                                            <div class="fw-semibold"><?= htmlspecialchars($product['username']) ?></div>
-                                            <small class="text-muted"><?= htmlspecialchars($product['departemen']) ?></small>
-                                        </td>
-                                        <td class="small"><?= $product['order_date'] ?></td>
-                                        <td class="fw-bold <?= $product['sisa_hari'] < 0 ? 'text-danger' : 'text-primary' ?>">
-                                            <?= $product['sisa_hari'] ?> H
-                                        </td>
-                                        <td class="fw-bold">Rp<?= number_format($product['harga_order'], 0, ',', '.') ?></td>
-                                        <td>
-                                            <?php if (!empty($product['foto'])): ?>
-                                                <button class="btn btn-sm btn-light border view-foto-btn" data-img="/license_aplikasi/public/uploads/<?= $product['foto'] ?>">
-                                                    <i class="bi bi-image"></i>
-                                                </button>
-                                            <?php else: ?>
-                                                <span class="text-muted" style="font-size: 10px;">N/A</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td><span class="badge badge-status bg-<?= $statusColor ?>"><?= ucfirst($product['status']) ?></span></td>
-                                        <td class="text-center">
-                                            <div class="btn-group">
-                                                <button class="btn btn-sm btn-update" 
-                                                    data-id="<?= $product['id'] ?>"
-                                                    data-application="<?= htmlspecialchars($product['application_name']) ?>"
-                                                    data-agreement="<?= htmlspecialchars($product['agreement_number']) ?>"
-                                                    data-name="<?= htmlspecialchars($product['username']) ?>"
-                                                    data-departemen="<?= htmlspecialchars($product['departemen']) ?>"
-                                                    data-email="<?= htmlspecialchars($product['email_name']) ?>"
-                                                    data-expired="<?= $product['order_date'] ?>"
-                                                    data-harga="<?= $product['harga_order'] ?>">
-                                                    <i class="bi bi-pencil-square text-warning"></i>
-                                                </button>
-                                                <button class="btn btn-sm done-btn" data-id="<?= $product['id'] ?>"><i class="bi bi-wallet2 text-success"></i></button>
-                                                <a href="/license_aplikasi/public/index.php?action=delete&id=<?= $product['id'] ?>" class="btn btn-sm" onclick="return confirm('Hapus?')"><i class="bi bi-trash text-danger"></i></a>
-                                            </div>
-                                        </td>
+                                        <tr data-app="<?= htmlspecialchars($product['application_name']) ?>">
+                                            <td class="text-muted small"><?= $no++ ?></td>
+                                            <td class="fw-bold"><?= htmlspecialchars($product['application_name']) ?></td>
+                                            <td class="small"><?= htmlspecialchars($product['agreement_number']) ?></td>
+                                            <td>
+                                                <div class="fw-semibold"><?= htmlspecialchars($product['username']) ?></div>
+                                                <small class="text-muted"><?= htmlspecialchars($product['departemen']) ?></small>
+                                            </td>
+                                            <td class="small"><?= $product['order_date'] ?></td>
+                                            <td class="fw-bold <?= $product['sisa_hari'] < 0 ? 'text-danger' : 'text-primary' ?>">
+                                                <?= $product['sisa_hari'] ?> H
+                                            </td>
+                                            <td class="fw-bold">Rp<?= number_format($product['harga_order'], 0, ',', '.') ?></td>
+                                            <td>
+                                                <?php if (!empty($product['foto'])):
+                                                    $ext = pathinfo($product['foto'], PATHINFO_EXTENSION);
+                                                    $isPdf = (strtolower($ext) === 'pdf');
+                                                ?>
+                                                    <button class="btn btn-sm <?= $isPdf ? 'btn-danger' : 'btn-light border' ?> view-foto-btn"
+                                                        data-img="/license_aplikasi/public/uploads/<?= $product['foto'] ?>"
+                                                        data-type="<?= $isPdf ? 'pdf' : 'img' ?>">
+                                                        <i class="bi <?= $isPdf ? 'bi-file-earmark-pdf' : 'bi-image' ?>"></i>
+                                                    </button>
+                                                <?php else: ?>
+                                                    <span class="text-muted" style="font-size: 10px;">N/A</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><span class="badge badge-status bg-<?= $statusColor ?>"><?= ucfirst($product['status']) ?></span></td>
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-update"
+                                                        data-id="<?= $product['id'] ?>"
+                                                        data-application="<?= htmlspecialchars($product['application_name']) ?>"
+                                                        data-agreement="<?= htmlspecialchars($product['agreement_number']) ?>"
+                                                        data-name="<?= htmlspecialchars($product['username']) ?>"
+                                                        data-departemen="<?= htmlspecialchars($product['departemen']) ?>"
+                                                        data-email="<?= htmlspecialchars($product['email_name']) ?>"
+                                                        data-expired="<?= $product['order_date'] ?>"
+                                                        data-harga="<?= $product['harga_order'] ?>">
+                                                        <i class="bi bi-pencil-square text-warning"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm done-btn" data-id="<?= $product['id'] ?>"><i class="bi bi-wallet2 text-success"></i></button>
+                                                    <a href="/license_aplikasi/public/index.php?action=delete&id=<?= $product['id'] ?>" class="btn btn-sm" onclick="return confirm('Hapus?')"><i class="bi bi-trash text-danger"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach;
+                                else : ?>
+                                    <tr>
+                                        <td colspan="10" class="text-center py-5">Belum ada data</td>
                                     </tr>
-                                <?php endforeach; else : ?>
-                                    <tr><td colspan="10" class="text-center py-5">Belum ada data</td></tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -298,7 +328,9 @@ $activePage = 'products';
 
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div class="text-muted small" id="tableInfo"></div>
-                        <nav><ul class="pagination pagination-sm mb-0" id="paginationWrapper"></ul></nav>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0" id="paginationWrapper"></ul>
+                        </nav>
                     </div>
                 </div>
             </main>
@@ -309,7 +341,9 @@ $activePage = 'products';
         <div class="modal-dialog modal-lg">
             <div class="modal-content card-custom">
                 <form id="productForm">
-                    <div class="modal-header border-0"><h5 class="fw-bold">Tambah Lisensi Baru</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                    <div class="modal-header border-0">
+                        <h5 class="fw-bold">Tambah Lisensi Baru</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
                     <div class="modal-body row g-3">
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">Application Name</label>
@@ -346,7 +380,7 @@ $activePage = 'products';
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">Foto Lisensi</label>
-                            <input type="file" class="form-control" name="foto" accept="image/*">
+                            <input type="file" class="form-control" name="foto" accept="image/*,application/pdf">
                         </div>
                     </div>
                     <div class="modal-footer border-0">
@@ -362,7 +396,9 @@ $activePage = 'products';
             <div class="modal-content card-custom">
                 <form id="editProductForm">
                     <input type="hidden" name="id" id="edit_product_id">
-                    <div class="modal-header border-0"><h5 class="fw-bold">Perbarui Lisensi</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                    <div class="modal-header border-0">
+                        <h5 class="fw-bold">Perbarui Lisensi</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
                     <div class="modal-body row g-3">
                         <div class="col-md-6"><label class="small fw-bold">Application Name</label><input type="text" class="form-control" id="edit_application_name" name="application_name" required></div>
                         <div class="col-md-6"><label class="small fw-bold">Agreement Number</label><input type="text" class="form-control" id="edit_agreement_number" name="agreement_number" required></div>
@@ -379,7 +415,7 @@ $activePage = 'products';
                         <div class="col-md-6"><label class="small fw-bold">Email</label><input type="text" class="form-control" id="edit_email" name="email_name"></div>
                         <div class="col-md-6"><label class="small fw-bold">Expired Date</label><input type="date" class="form-control" id="edit_order_date" name="order_date" required></div>
                         <div class="col-md-6"><label class="small fw-bold">Harga</label><input type="number" class="form-control" id="edit_harga_order" name="harga_order"></div>
-                        <div class="col-md-6"><label class="small fw-bold">Update Foto</label><input type="file" class="form-control" name="foto" accept="image/*"></div>
+                        <div class="col-md-6"><label class="small fw-bold">Update Foto</label><input type="file" class="form-control" name="foto" accept="image/*,application/pdf"></div>
                     </div>
                     <div class="modal-footer border-0"><button type="submit" class="btn btn-primary px-4">Update Data</button></div>
                 </form>
@@ -391,7 +427,9 @@ $activePage = 'products';
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content card-custom">
                 <form id="paymentForm">
-                    <div class="modal-header border-0"><h6 class="fw-bold">Konfirmasi Pembayaran</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                    <div class="modal-header border-0">
+                        <h6 class="fw-bold">Konfirmasi Pembayaran</h6><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
                     <div class="modal-body">
                         <input type="hidden" id="payment_product_id">
                         <div class="mb-2"><label class="small">Tanggal</label><input type="date" class="form-control form-control-sm" id="payment_date" required></div>
@@ -406,8 +444,9 @@ $activePage = 'products';
     <div class="modal fade" id="photoModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content bg-transparent border-0 text-center">
-                <div class="img-container rounded shadow-lg bg-white">
-                    <img src="" id="imgPreview" alt="Foto Lisensi">
+                <div class="img-container rounded shadow-lg bg-white" style="min-height: 400px;">
+                    <img src="" id="imgPreview" alt="Foto Lisensi" style="display:none;">
+                    <iframe src="" id="pdfPreview" width="100%" height="500px" style="display:none; border:none;"></iframe>
                 </div>
                 <div class="mt-3">
                     <a href="" id="downloadBtn" download class="btn btn-light btn-sm px-3"><i class="bi bi-download me-2"></i>Download</a>
@@ -429,7 +468,9 @@ $activePage = 'products';
             page: 1
         };
 
-        function saveState() { localStorage.setItem(STATE_KEY, JSON.stringify(currentState)); }
+        function saveState() {
+            localStorage.setItem(STATE_KEY, JSON.stringify(currentState));
+        }
         document.getElementById('searchProduct').value = currentState.search;
         document.getElementById('filterExpired').value = currentState.filter;
         document.getElementById('rowsPerPage').value = currentState.rowsPerPage;
@@ -441,8 +482,12 @@ $activePage = 'products';
         const originalRows = Array.from(tableBody.querySelectorAll('tr'));
 
         document.addEventListener("DOMContentLoaded", function() {
-            tsAdd = new TomSelect('#add_departemen', { placeholder: "Cari dept..." });
-            tsEdit = new TomSelect('#edit_departemen', { placeholder: "Cari dept..." });
+            tsAdd = new TomSelect('#add_departemen', {
+                placeholder: "Cari dept..."
+            });
+            tsEdit = new TomSelect('#edit_departemen', {
+                placeholder: "Cari dept..."
+            });
 
             if (localStorage.getItem('sidebarStatus') === 'collapsed') {
                 sidebar.classList.add('collapsed');
@@ -480,7 +525,7 @@ $activePage = 'products';
 
         function updateTable() {
             const today = new Date();
-            today.setHours(0,0,0,0);
+            today.setHours(0, 0, 0, 0);
 
             let filteredRows = originalRows.filter(row => {
                 const text = row.innerText.toLowerCase();
@@ -510,7 +555,9 @@ $activePage = 'products';
             const start = (currentState.page - 1) * currentState.rowsPerPage;
             const paginated = filteredRows.slice(start, start + currentState.rowsPerPage);
 
-            let activeCount = 0, expiringCount = 0, expiredCount = 0;
+            let activeCount = 0,
+                expiringCount = 0,
+                expiredCount = 0;
             filteredRows.forEach(row => {
                 const statusCell = row.cells[8];
                 const statusText = statusCell.innerText.toLowerCase();
@@ -518,7 +565,7 @@ $activePage = 'products';
                 else if (statusText.includes('segera')) expiringCount++;
                 else if (statusText.includes('expired')) expiredCount++;
             });
-            
+
             document.querySelectorAll('.stat-card')[0].querySelector('h3').innerText = total;
             document.querySelectorAll('.stat-card')[1].querySelector('h3').innerText = activeCount;
             document.querySelectorAll('.stat-card')[2].querySelector('h3').innerText = expiringCount;
@@ -549,18 +596,26 @@ $activePage = 'products';
                 const li = document.createElement('li');
                 li.className = `page-item ${i === currentState.page ? 'active' : ''}`;
                 li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-                li.onclick = (e) => { e.preventDefault(); currentState.page = i; saveState(); updateTable(); };
+                li.onclick = (e) => {
+                    e.preventDefault();
+                    currentState.page = i;
+                    saveState();
+                    updateTable();
+                };
                 wrapper.appendChild(li);
             }
         }
 
         document.getElementById('productForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            fetch('/license_aplikasi/public/index.php?action=create', { method: 'POST', body: new FormData(this) })
-            .then(res => res.json()).then(data => {
-                alert(data.message);
-                if(data.status === 'success') location.reload();
-            });
+            fetch('/license_aplikasi/public/index.php?action=create', {
+                    method: 'POST',
+                    body: new FormData(this)
+                })
+                .then(res => res.json()).then(data => {
+                    alert(data.message);
+                    if (data.status === 'success') location.reload();
+                });
         });
 
         function handleTableClick(event) {
@@ -589,10 +644,25 @@ $activePage = 'products';
 
             if (btn.classList.contains('view-foto-btn')) {
                 const src = btn.getAttribute('data-img');
-                const img = document.getElementById('imgPreview');
-                img.src = src;
-                img.classList.remove('zoomed');
-                document.getElementById('downloadBtn').href = src;
+                const type = btn.getAttribute('data-type');
+
+                const imgEl = document.getElementById('imgPreview');
+                const pdfEl = document.getElementById('pdfPreview');
+                const downloadBtn = document.getElementById('downloadBtn');
+
+                downloadBtn.href = src;
+
+                if (type === 'pdf') {
+                    imgEl.style.display = 'none';
+                    pdfEl.style.display = 'block';
+                    pdfEl.src = src;
+                } else {
+                    pdfEl.style.display = 'none';
+                    imgEl.style.display = 'block';
+                    imgEl.src = src;
+                    imgEl.classList.remove('zoomed');
+                }
+
                 new bootstrap.Modal('#photoModal').show();
                 return;
             }
@@ -603,11 +673,14 @@ $activePage = 'products';
         document.getElementById('editProductForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const id = document.getElementById('edit_product_id').value;
-            fetch('/license_aplikasi/public/index.php?action=update&id=' + id, { method: 'POST', body: new FormData(this) })
-            .then(res => res.json()).then(data => {
-                alert(data.message);
-                if(data.status === 'success') location.reload();
-            });
+            fetch('/license_aplikasi/public/index.php?action=update&id=' + id, {
+                    method: 'POST',
+                    body: new FormData(this)
+                })
+                .then(res => res.json()).then(data => {
+                    alert(data.message);
+                    if (data.status === 'success') location.reload();
+                });
         });
 
         document.getElementById('paymentForm').addEventListener('submit', function(e) {
@@ -618,17 +691,20 @@ $activePage = 'products';
             fd.append('payment_date', document.getElementById('payment_date').value);
             fd.append('amount', document.getElementById('payment_amount').value);
 
-            fetch('/license_aplikasi/public/index.php?action=update&id=' + id, { method: 'POST', body: fd })
-            .then(res => res.json()).then(data => {
-                if(data.status === 'success') location.reload();
-                else alert(data.message);
-            });
+            fetch('/license_aplikasi/public/index.php?action=update&id=' + id, {
+                    method: 'POST',
+                    body: fd
+                })
+                .then(res => res.json()).then(data => {
+                    if (data.status === 'success') location.reload();
+                    else alert(data.message);
+                });
         });
 
         document.getElementById('imgPreview').addEventListener('click', function() {
             this.classList.toggle('zoomed');
         });
-
     </script>
 </body>
+
 </html>

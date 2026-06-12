@@ -182,19 +182,16 @@ class ProductController
             $harga       = !empty($_POST['harga_order']) ? $_POST['harga_order'] : 0;
             $departemen  = $_POST['departemen'] ?? '';
             $email   = trim($_POST['email_name'] ?? '');
-            $foto        = '';
-
+            $foto = '';
             $targetDir = __DIR__ . "/../public/uploads/";
-            if (!is_dir($targetDir)) {
-                mkdir($targetDir, 0777, true);
-            }
 
             if (isset($_FILES['foto']) && $_FILES['foto']['error'] === 0) {
-                $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-                $foto = "IMG_" . time() . "_" . uniqid() . "." . $ext;
+                $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'pdf'];
 
-                if (!move_uploaded_file($_FILES['foto']['tmp_name'], $targetDir . $foto)) {
-                    $foto = null;
+                if (in_array($ext, $allowed)) {
+                    $foto = "DOC_" . time() . "_" . uniqid() . "." . $ext;
+                    move_uploaded_file($_FILES['foto']['tmp_name'], $targetDir . $foto);
                 }
             }
 
@@ -254,19 +251,21 @@ class ProductController
                 $harga      = !empty($_POST['harga_order']) ? $_POST['harga_order'] : 0;
                 $departemen = $_POST['departemen'] ?? '';
                 $email  = trim($_POST['email_name'] ?? '');
-                $foto       = $product['foto'];
+                $foto = $product['foto'];
+                $targetDir = __DIR__ . "/../public/uploads/";
 
                 if (isset($_FILES['foto']) && $_FILES['foto']['error'] === 0) {
-                    $targetDir = __DIR__ . "/../public/uploads/";
-                    if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+                    $ext = strtolower(pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION));
+                    $allowed = ['jpg', 'jpeg', 'png', 'pdf'];
 
-                    if ($foto && file_exists($targetDir . $foto)) {
-                        unlink($targetDir . $foto);
+                    if (in_array($ext, $allowed)) {
+                        if ($foto && file_exists($targetDir . $foto)) {
+                            unlink($targetDir . $foto);
+                        }
+
+                        $foto = "DOC_" . time() . "_" . uniqid() . "." . $ext;
+                        move_uploaded_file($_FILES['foto']['tmp_name'], $targetDir . $foto);
                     }
-
-                    $ext = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
-                    $foto = "IMG_" . time() . "_" . uniqid() . "." . $ext;
-                    move_uploaded_file($_FILES['foto']['tmp_name'], $targetDir . $foto);
                 }
 
                 $success = $this->model->update($id, $name, $application, $agreement, $expired, $harga, $departemen, $email, $foto);

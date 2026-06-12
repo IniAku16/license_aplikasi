@@ -128,18 +128,16 @@ $orderDate = clone $exp;
 $orderDate->modify('-1 year');
 
 $filePath = realpath(__DIR__ . '/../public/uploads/' . $data['foto']);
-$has_image = false;
-$cid_name = "license_img_" . $id;
-
-if ($filePath && file_exists($filePath) && is_file($filePath)) {
-    $has_image = true;
-} else {
-}
-$has_image = false;
+$has_file = false;
+$is_pdf = false;
 $cid_name = "license_img_" . $id;
 
 if (!empty($data['foto']) && file_exists($filePath)) {
-    $has_image = true;
+    $has_file = true;
+    $ext = strtolower(pathinfo($data['foto'], PATHINFO_EXTENSION));
+    if ($ext === 'pdf') {
+        $is_pdf = true;
+    }
 }
 
 require_once __DIR__ . '/../vendor/phpmailer/src/PHPMailer.php';
@@ -159,24 +157,40 @@ $mail->setFrom("itlicenseaplikasi@hexindo-tbk.co.id", "IT License System");
 $mail->addAddress("ara.rhzz16@gmail.com");
 $mail->addAddress("denipratama@hexindo-tbk.co.id");
 
-if ($has_image) {
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime_type = $finfo->file($filePath);
-    $mail->addEmbeddedImage($filePath, $cid_name, $data['foto'], 'base64', $mime_type);
+if ($has_file) {
+    if ($is_pdf) {
+        $mail->addAttachment($filePath, $data['foto']);
+    } else {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime_type = $finfo->file($filePath);
+        $mail->addEmbeddedImage($filePath, $cid_name, $data['foto'], 'base64', $mime_type);
+    }
 }
 
 $mail->isHTML(true);
 $mail->Subject = "Request Penawaran: " . $data['application_name'] . " - " . $data['username'];
 $html_foto_body = "";
-if ($has_image) {
-    $html_foto_body = "
-    <div style='margin-top: 25px; border-top: 1px solid #f1f2f6; padding-top: 20px;'>
-        <p style='font-size: 13px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px;'>PREVIEW LISENSI:</p>
-        <div style='text-align: center; background: #fafafa; padding: 10px; border-radius: 12px; border: 1px solid #ededed;'>
-            <img src='cid:$cid_name' style='max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);'>
-            <p style='font-size: 11px; color: #95a5a6; margin-top: 10px;'>Lihat lampiran email untuk mengunduh file asli.</p>
-        </div>
-    </div>";
+if ($has_file) {
+    if ($is_pdf) {
+        $html_foto_body = "
+        <div style='margin-top: 25px; border-top: 1px solid #f1f2f6; padding-top: 20px;'>
+            <p style='font-size: 13px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px;'>DOKUMEN LISENSI:</p>
+            <div style='text-align: center; background: #fafafa; padding: 20px; border-radius: 12px; border: 1px solid #ededed;'>
+                <p style='font-size: 30px; margin: 0;'>📄</p>
+                <p style='font-size: 14px; color: #2d3436; font-weight: bold; margin: 5px 0;'>File Dokumen PDF</p>
+                <p style='font-size: 11px; color: #95a5a6;'>File dokumen lisensi telah terlampir pada email ini.</p>
+            </div>
+        </div>";
+    } else {
+        $html_foto_body = "
+        <div style='margin-top: 25px; border-top: 1px solid #f1f2f6; padding-top: 20px;'>
+            <p style='font-size: 13px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px;'>PREVIEW LISENSI:</p>
+            <div style='text-align: center; background: #fafafa; padding: 10px; border-radius: 12px; border: 1px solid #ededed;'>
+                <img src='cid:$cid_name' style='max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);'>
+                <p style='font-size: 11px; color: #95a5a6; margin-top: 10px;'>Lihat lampiran email untuk mengunduh file asli.</p>
+            </div>
+        </div>";
+    }
 }
 $mail->Body = "
 <html>
